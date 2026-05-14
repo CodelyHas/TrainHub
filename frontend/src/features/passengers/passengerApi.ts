@@ -2,8 +2,9 @@ import { getAuthHeaders, getAuthJsonHeaders } from "../auth/authHeaders";
 import type { Passenger } from "./passengerTypes";
 import type { PassengerFormData } from "./passengerSchema";
 import { createPassengerDTO } from "./passengerForm.dto";
+import API_URL from "../../config/api";
 
-const PASSENGER_API_URL = "http://localhost:3000/passengers";
+const PASSENGER_API_URL = `${API_URL}/passengers`;
 
 export const fetchPassengers = async (): Promise<Passenger[]> => {
   const response = await fetch(PASSENGER_API_URL, {

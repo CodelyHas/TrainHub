@@ -5,8 +5,9 @@ import type {
   EditStaffFormData,
 } from "./staffSchema";
 import { createStaffDTO, updateStaffDTO } from "./staff.dto";
+import API_URL from "../../config/api";
 
-const STAFF_API_URL = "http://localhost:3000/users/staff";
+const STAFF_API_URL = `${API_URL}/users/staff`;
 
 export const fetchStaffAccounts = async (): Promise<Staff[]> => {
   const response = await fetch(STAFF_API_URL, {

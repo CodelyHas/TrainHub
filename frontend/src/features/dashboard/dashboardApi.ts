@@ -1,7 +1,8 @@
 import { getAuthHeaders } from "../auth/authHeaders";
 import type { DashboardSummary } from "./dashboardTypes";
+import API_URL from "../../config/api";
 
-const DASHBOARD_API_URL = "http://localhost:3000/dashboard";
+const DASHBOARD_API_URL = `${API_URL}/dashboard`;
 
 export const fetchDashboardSummary = async (): Promise<DashboardSummary> => {
   const response = await fetch(`${DASHBOARD_API_URL}/summary`, {

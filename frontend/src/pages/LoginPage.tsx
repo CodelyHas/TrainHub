@@ -7,7 +7,7 @@ import LoginFormFields from "../components/auth/LoginFormFields";
 import { loginSchema } from "../features/auth/loginSchema";
 import type { LoginFormData } from "../features/auth/loginSchema";
 import { saveAuthSession } from "../features/auth/authStorage";
-import { getAuthJsonHeaders } from "../features/auth/authHeaders";
+import { loginApi } from "../features/auth/authApi";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -22,19 +22,8 @@ function LoginPage() {
 
   const login = async (data: LoginFormData) => {
     try {
-      const response = await fetch("http://localhost:3000/auth/login", {
-        method: "POST",
-        headers: getAuthJsonHeaders(),
-        body: JSON.stringify(data),
-      });
+      const result = await loginApi(data);
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        toast.error(result.message || "Login failed");
-        return;
-      }
-      
       saveAuthSession(result.token, result.user);
 
       toast.success("Login successful");
@@ -42,10 +31,13 @@ function LoginPage() {
 
       navigate("/dashboard");
     } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Could not connect to the server";
+
       console.error("Login error:", error);
-      toast.error("Could not connect to the server");
+      toast.error(message);
     }
-  }
+  };
 
   return (
     <div className="loginPage">

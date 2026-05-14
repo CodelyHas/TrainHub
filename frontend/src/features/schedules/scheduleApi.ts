@@ -2,8 +2,9 @@ import { getAuthHeaders, getAuthJsonHeaders } from "../auth/authHeaders";
 import type { Schedule } from "./scheduleTypes";
 import type { ScheduleFormData } from "./scheduleSchema";
 import { createScheduleDTO } from "./scheduleForm.dto";
+import API_URL from "../../config/api";
 
-const SCHEDULE_API_URL = "http://localhost:3000/schedules";
+const SCHEDULE_API_URL = `${API_URL}/schedules`;
 
 export const createScheduleRequest = async (
   data: ScheduleFormData
