@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  
+}
+
+model TrainSchedule {
+  id             Int      @id @default(autoincrement())
+  trainName      String
+  departure      String
+  arrival        String
+  departureTime  DateTime
+  arrivalTime    DateTime
+  price          Float
+  capacity       Int
+  availableSeats Int
+  createdAt      DateTime @default(now())
+
+  reservations   Reservation[]
+}
+
+model Passenger {
+  id         Int      @id @default(autoincrement())
+  fullName   String
+  nationalId String   @unique
+  phone      String
+  email      String?
+  status     String   @default("ACTIVE")
+  createdAt  DateTime @default(now())
+
+  reservations Reservation[]
+}
+
+model Reservation {
+  id          Int      @id @default(autoincrement())
+
+  passengerId Int
+  scheduleId  Int
+
+  passenger   Passenger     @relation(fields: [passengerId], references: [id])
+  schedule    TrainSchedule @relation(fields: [scheduleId], references: [id])
+
+  seatCount   Int
+  totalPrice  Float
+  status      String   @default("CONFIRMED")
+  createdAt   DateTime @default(now())
+}
+
+enum UserRole {
+  ADMIN
+  STAFF
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  fullName     String
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(STAFF)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

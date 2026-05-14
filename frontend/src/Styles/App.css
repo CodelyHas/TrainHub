@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+html,
+body,
+#root {
+  @apply h-full overflow-x-hidden overflow-y-auto;
+}
+
+body {
+  @apply bg-gray-100;
+}
+
+/*Sidebar Styling*/
+.sidebarTitle {
+  @apply px-3 pt-5 pb-2 text-[11px] font-bold uppercase tracking-widest text-gray-500;
+}
+
+.sidebarLink {
+  @apply flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition;
+}
+
+.sidebarIcon {
+  @apply w-5 text-center text-sm;
+}
+
+/*Toast feedback*/
+.toast {
+  @apply w-[min(90vw,520px)]! rounded-2xl! bg-[#111827]! px-6! py-3! text-sm! font-semibold! text-white! shadow-2xl!;
+}
+
+/*login page data*/
+.loginPage {
+  @apply min-h-screen bg-linear-to-br from-blue-400 via-cyan-300 to-purple-400;
+}
+
+.loginBlock {
+  @apply w-screen min-h-screen flex items-center justify-center px-4;
+}
+
+.loginForm {
+  @apply flex flex-col bg-white rounded-lg w-full max-w-md p-6 sm:p-8 gap-4 max-h-[90vh] overflow-y-auto;
+}
+
+.loginHeader {
+  @apply absolute flex flex-row items-center justify-between font-bold text-2xl
+  top-0 left-0 w-full border-b border-[#868686] text-white;
+}
+
+.loginPage input{
+  @apply pl-9 outline-none py-2 border-b border-gray-400 w-full;
+}
+
+.loginPage button {
+  @apply rounded-3xl w-full hover:cursor-pointer;
+}
+
+.loginPage p {
+  @apply text-sm;
+}
+
+.loginInputIcon {
+  @apply absolute left-3 top-9 text-gray-400 text-sm;
+}
+
+/*universal form styling*/
+.Form {
+  @apply bg-white border border-gray-200 p-5 sm:p-8 w-full flex flex-col gap-6;
+}
+
+.Form h2,
+.editScheduleForm h2 {
+  @apply text-lg font-bold text-gray-800 border-b pb-2 mt-4;
+}
+
+.Form h3 {
+  @apply text-sm font-semibold text-gray-500;
+}
+
+.Form input,
+.editScheduleForm input {
+  @apply border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400;
+}
+
+.Form button {
+  @apply mt-4 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition;
+}
+
+
+/*schedules table list*/
+.tableHeaders th {
+  @apply py-3 px-4 text-xs font-semibold uppercase border-b border-gray-300 bg-gray-200 text-gray-800 whitespace-nowrap;
+}
+
+.tableCells td {
+  @apply p-3 text-sm border-b border-gray-200 whitespace-nowrap;
+}
+
+/*schedule editing interface*/
+.modalContainer {
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
+}
+
+.editScheduleForm {
+  @apply flex flex-col gap-6;
+}
+
+/*passenger table styles*/
+.searchInput {
+  @apply w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400;
+}
+
+/*Reservation table styles*/
+.filterButton {
+  @apply rounded-md border border-gray-300 shadow-sm px-4 py-2 my-2 outline-none focus:ring-2 focus:ring-blue-400;
+}
