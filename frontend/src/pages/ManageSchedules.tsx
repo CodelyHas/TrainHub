@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import EditScheduleModal from "../components/schedules/EditScheduleModal";
 import DeleteScheduleModal from "../components/schedules/DeleteScheduleModal";
 import ScheduleTable from "../components/schedules/ScheduleTable";
-import ScheduleEmptyState from "../components/schedules/scheduleEmptyState";
+import ScheduleEmptyState from "../components/schedules/ScheduleEmptyState";
 
 import type { Schedule } from "../features/schedules/scheduleTypes";
 import { fetchSchedules } from "../features/schedules/scheduleApi";
