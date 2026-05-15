@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import type { Passenger } from "../features/passengers/passengerTypes";
-import { filterPassengers } from "../features/passengers/passengerFilters";
+import {
+  filterPassengers,
+  type PassengerStatusFilter,
+} from "../features/passengers/passengerFilters";
 import { fetchPassengers } from "../features/passengers/passengerApi";
 
 import PassengerStatusModal from "../components/passengers/PassengerStatusModal";
@@ -20,6 +23,8 @@ function ManagePassengers() {
   const [passengers, setPassengers] = useState<Passenger[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] =
+  useState<PassengerStatusFilter>("all");
 
   const {
     selectedItem: selectedPassenger,
@@ -75,21 +80,39 @@ function ManagePassengers() {
   }, []);
 
   if (loading) return <p className="p-6">Loading passengers...</p>;
-
-  const filteredPassengers = filterPassengers(passengers, searchTerm);
+  
+  const filteredPassengers = filterPassengers(
+    passengers,
+    searchTerm,
+    statusFilter
+  );
 
   return (
     <div className="p-6">
       <h2 className="text-xl font-bold mb-4">Passengers</h2>
 
-      <div className="mb-4 flex items-center justify-between gap-4">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search passengers by name, national ID, phone, email, or status..."
-          className="searchInput"
-        />
+      <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-1 flex-col gap-3 md:flex-row">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search passengers by name, national ID, phone, or email..."
+            className="searchInput"
+          />
+
+          <select
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as PassengerStatusFilter)
+            }
+            className="filterButton"
+          >
+            <option value="all">All Passengers</option>
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+        </div>
 
         <p className="text-sm text-gray-500 whitespace-nowrap">
           Showing {filteredPassengers.length} of {passengers.length}
