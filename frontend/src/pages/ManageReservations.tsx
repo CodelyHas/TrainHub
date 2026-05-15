@@ -46,6 +46,7 @@ function ManageReservations() {
 
   const updateCancelledReservation = (updatedReservation: Reservation) => {
     setReservations((prev) => updateItemById(prev, updatedReservation));
+    closeCancelModal();
   };
 
   useEffect(() => {
