@@ -6,9 +6,9 @@ export const createScheduleDTO = (data: ScheduleFormData): ScheduleDTO => {
     trainName: data.trainName,
     departure: data.departure,
     arrival: data.arrival,
-    departureTime: data.departureTime,
-    arrivalTime: data.arrivalTime,
+    departureTime: new Date(data.departureTime).toISOString(),
+    arrivalTime: new Date(data.arrivalTime).toISOString(),
     price: Number(data.price),
     capacity: Number(data.capacity),
   };
-}
+};
