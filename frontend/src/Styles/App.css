@@ -34,16 +34,16 @@ body {
 }
 
 .loginBlock {
-  @apply w-screen min-h-screen flex items-center justify-center px-4;
+  @apply min-h-[calc(100vh-90px)] flex items-center justify-center px-4 py-6;
 }
 
 .loginForm {
-  @apply flex flex-col bg-white rounded-lg w-full max-w-md p-6 sm:p-8 gap-4 max-h-[90vh] overflow-y-auto;
+  @apply flex flex-col bg-white rounded-lg w-full max-w-md p-6 sm:p-8 gap-4 max-h-[calc(100vh-130px)] overflow-y-auto;
 }
 
 .loginHeader {
-  @apply absolute flex flex-row items-center justify-between font-bold text-2xl
-  top-0 left-0 w-full border-b border-[#868686] text-white;
+  @apply flex flex-row items-center justify-between font-bold text-2xl
+  w-full border-b border-[#868686] text-white;
 }
 
 .loginPage input{
