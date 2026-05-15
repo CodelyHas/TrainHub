@@ -92,7 +92,7 @@ function ManagePassengers() {
       <h2 className="text-xl font-bold mb-4">Passengers</h2>
 
       <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-1 flex-col gap-3 md:flex-row">
+        <div className="flex flex-1 flex-col gap-3 md:flex-row md:items-center">
           <input
             type="text"
             value={searchTerm}
