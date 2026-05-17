@@ -74,7 +74,12 @@ function EditPassengerModal({ passenger, onClose, onUpdated }: Props) {
           Editing {passenger.fullName}
         </h2>
 
-        <form className="editScheduleForm" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <form 
+          className="editScheduleForm" 
+          onSubmit={handleSubmit(onSubmit)} 
+          noValidate 
+          autoComplete="off"
+        >
           <div className="flex flex-col gap-2">
             <label className="font-semibold text-sm text-gray-700">
               Full Name

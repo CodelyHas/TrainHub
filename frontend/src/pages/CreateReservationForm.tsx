@@ -90,7 +90,12 @@ function CreateReservationForm() {
 
   return (
     <div className="w-full">
-      <form className="Form" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form 
+        className="Form" 
+        onSubmit={handleSubmit(onSubmit)} 
+        noValidate
+        autoComplete="off"
+      >
         <ReservationFormFields
           control={control}
           register={register}

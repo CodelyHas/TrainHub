@@ -138,6 +138,7 @@ function StaffFormModal(props: Props) {
           className="editScheduleForm"
           onSubmit={handleSubmit(onSubmit)}
           noValidate
+          autoComplete="off"
         >
           <StaffFormFields
             register={register}

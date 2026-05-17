@@ -81,6 +81,7 @@ function EditScheduleModal({ schedule, onClose, onUpdated }: Props) {
           className="editScheduleForm"
           onSubmit={handleSubmit(onSubmit)}
           noValidate
+          autoComplete="off"
         >
         <ScheduleFormFields register={register} errors={errors} />
           {submitError && (

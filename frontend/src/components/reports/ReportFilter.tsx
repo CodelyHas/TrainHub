@@ -31,6 +31,7 @@ function ReportFilter({ loading, onGenerate }: Props) {
         onSubmit={handleSubmit(onGenerate)}
         className="grid grid-cols-1 gap-4 md:grid-cols-4"
         noValidate
+        autoComplete="off"
       >
         <div>
           <label className="mb-1 block text-sm font-semibold text-gray-600">

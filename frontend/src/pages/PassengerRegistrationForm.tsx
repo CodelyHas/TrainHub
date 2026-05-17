@@ -39,7 +39,7 @@ function PassengerRegistrationForm() {
 
   return (
     <div className="w-full">
-      <form className="Form" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form className="Form" onSubmit={handleSubmit(onSubmit)} noValidate autoComplete="off">
         <PassengerFormFields register={register} errors={errors} />
 
         <button className="cursor-pointer font-semibold" type="submit">
