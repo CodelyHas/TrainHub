@@ -15,14 +15,14 @@ interface Props {
 }
 
 function OccupancyChart({ data }: Props) {
-  const [ready, setReady] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setReady(true);
-    }, 100);
+    const timer = requestAnimationFrame(() => {
+      setMounted(true);
+    });
 
-    return () => clearTimeout(timeout);
+    return () => cancelAnimationFrame(timer);
   }, []);
 
   if (data.length === 0) {
@@ -33,13 +33,13 @@ function OccupancyChart({ data }: Props) {
     );
   }
 
-  if (!ready) {
+  if (!mounted) {
     return <div className="mt-4 h-72 w-full" />;
   }
 
   return (
     <div className="mt-4 h-72 w-full min-w-0">
-      <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="trainName" />
