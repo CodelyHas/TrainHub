@@ -27,7 +27,6 @@ function LoginPage() {
       saveAuthSession(result.token, result.user);
 
       toast.success("Login successful");
-      console.log("Logged in:", result);
 
       navigate("/dashboard");
     } catch (error) {
