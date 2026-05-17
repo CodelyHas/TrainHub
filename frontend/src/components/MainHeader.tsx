@@ -1,17 +1,11 @@
-import { Link, useNavigate } from "react-router-dom";
-import { clearAuthSession } from "../features/auth/authStorage";
+import { Link } from "react-router-dom";
+import LogoutButton from "./auth/LogoutButton";
 
 function MainHeader() {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    clearAuthSession();
-    navigate("/login");
-  };
-
   return (
     <header
       className="
+        w-full z-50
         bg-linear-to-r from-blue-600 via-cyan-500 to-purple-600
         text-white flex items-center justify-between
         px-4 py-3 sm:px-8 sm:py-4 shadow-md
@@ -19,28 +13,21 @@ function MainHeader() {
     >
       <Link
         to="/dashboard"
-        className="flex items-center gap-2 font-bold text-3xl sm:text-4xl"
+        className="flex items-center gap-2 text-2xl sm:text-3xl font-bold"
       >
         <span>TrainHub</span>
-        <i className="fa-solid fa-train text-3xl sm:text-4xl"></i>
+        <i className="fa-solid fa-train"></i>
       </Link>
 
-      <nav className="flex items-center gap-4 sm:gap-8 text-sm sm:text-base font-bold">
+      <nav className="flex gap-4 sm:gap-8 text-md sm:text-md font-bold items-center">
         <Link
           to="/dashboard"
-          className="hover:underline underline-offset-4"
+          className="hover:underline decoration-1.5 underline-offset-4"
         >
           Dashboard
         </Link>
 
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="flex items-center gap-2 hover:underline underline-offset-4 cursor-pointer"
-        >
-          <i className="fa-solid fa-right-from-bracket"></i>
-          <span>Logout</span>
-        </button>
+        <LogoutButton/>
       </nav>
     </header>
   );
