@@ -1,6 +1,7 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import FormInput from "../FormInput";
 import type { ScheduleFormData } from "../../features/schedules/scheduleSchema";
+import { cityNameCharactersOnly } from "../../utils/inputFormatting";
 
 interface ScheduleFormFieldsProps {
   register: UseFormRegister<ScheduleFormData>;
@@ -22,6 +23,9 @@ function ScheduleFormFields({ register, errors }: ScheduleFormFieldsProps) {
       <FormInput
         label="Departure"
         placeholder="Enter departure city"
+        onInput={(e) => {
+          e.currentTarget.value = cityNameCharactersOnly(e.currentTarget.value);
+        }}
         error={errors.departure?.message}
         {...register("departure")}
       />
@@ -29,6 +33,9 @@ function ScheduleFormFields({ register, errors }: ScheduleFormFieldsProps) {
       <FormInput
         label="Arrival"
         placeholder="Enter arrival city"
+        onInput={(e) => {
+          e.currentTarget.value = cityNameCharactersOnly(e.currentTarget.value);
+        }}
         error={errors.arrival?.message}
         {...register("arrival")}
       />

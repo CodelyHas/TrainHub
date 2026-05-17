@@ -16,15 +16,15 @@ interface Props {
 function OccupancyChart({ data }: Props) {
   if (data.length === 0) {
     return (
-      <div className="mt-4 flex h-64 items-center justify-center rounded-md border border-dashed border-gray-300 text-sm text-gray-400">
+      <div className="mt-4 flex h-64 w-full items-center justify-center rounded-md border border-dashed border-gray-300 text-sm text-gray-400">
         No occupancy data available
       </div>
     );
   }
 
   return (
-    <div className="mt-4 h-72">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="mt-4 h-72 w-full min-w-0">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="trainName" />

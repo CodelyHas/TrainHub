@@ -1,6 +1,7 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import FormInput from "../FormInput";
 import type { PassengerFormData } from "../../features/passengers/passengerSchema";
+import { lettersAndSpacesOnly } from "../../utils/inputFormatting";
 
 interface PassengerFormFieldsProps {
   register: UseFormRegister<PassengerFormData>;
@@ -15,6 +16,9 @@ function PassengerFormFields({ register, errors }: PassengerFormFieldsProps) {
       <FormInput
         label="Full Name"
         placeholder="Enter passenger full name"
+        onInput={(e) => {
+          e.currentTarget.value = lettersAndSpacesOnly(e.currentTarget.value);
+        }}
         error={errors.fullName?.message}
         {...register("fullName")}
       />

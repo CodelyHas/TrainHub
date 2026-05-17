@@ -4,6 +4,11 @@ type ValidationMode = "create" | "edit";
 
 const cityNameRegex = /^[\p{L}\s.'-]+$/u;
 
+const isValidDate = (value: string) => {
+  const date = new Date(value);
+  return !Number.isNaN(date.getTime());
+};
+
 export const getScheduleSchema = (mode: ValidationMode) =>
   z
     .object({
@@ -21,9 +26,15 @@ export const getScheduleSchema = (mode: ValidationMode) =>
         .min(1, "Arrival city is required.")
         .regex(cityNameRegex, "Arrival city must contain letters only."),
 
-      departureTime: z.string().min(1, "Departure time is required."),
+      departureTime: z
+        .string()
+        .min(1, "Departure time is required.")
+        .refine(isValidDate, "Departure time must be a valid date."),
 
-      arrivalTime: z.string().min(1, "Arrival time is required."),
+      arrivalTime: z
+        .string()
+        .min(1, "Arrival time is required.")
+        .refine(isValidDate, "Arrival time must be a valid date."),
 
       price: z
         .string()
@@ -47,6 +58,14 @@ export const getScheduleSchema = (mode: ValidationMode) =>
 
       const departureTime = new Date(data.departureTime);
       const arrivalTime = new Date(data.arrivalTime);
+
+      if (
+        Number.isNaN(departureTime.getTime()) ||
+        Number.isNaN(arrivalTime.getTime())
+      ) {
+        return;
+      }
+
       const now = new Date();
 
       const maxScheduleDate = new Date();

@@ -9,13 +9,16 @@ import {
   type CreateStaffFormData,
   type EditStaffFormData,
 } from "../../features/staff/staffSchema";
+
 import {
   createStaffAccount,
   updateStaffAccount,
 } from "../../features/staff/staffApi";
+
 import type { Staff } from "../../features/staff/staffTypes";
 import { staffToFormData } from "../../features/staff/staffForm.mapper";
 
+import StaffFormFields from "./StaffFormFields";
 
 interface CreateProps {
   mode: "create";
@@ -33,48 +36,48 @@ interface EditProps {
 type Props = CreateProps | EditProps;
 
 function StaffFormModal(props: Props) {
-    const [submitError, setSubmitError] = useState("");
+  const [submitError, setSubmitError] = useState("");
 
-    const isEditMode = props.mode === "edit";
+  const isEditMode = props.mode === "edit";
 
-    const {
-      register,
-      handleSubmit,
-      reset,
-      formState: { errors, isSubmitting },
-    } = useForm<CreateStaffFormData | EditStaffFormData>({
-      resolver: zodResolver(isEditMode ? editStaffSchema : createStaffSchema),
-      defaultValues: isEditMode
-        ? staffToFormData(props.staff)
-        : {
-            fullName: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-          },
-    });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<CreateStaffFormData | EditStaffFormData>({
+    resolver: zodResolver(isEditMode ? editStaffSchema : createStaffSchema),
+    defaultValues: isEditMode
+      ? staffToFormData(props.staff)
+      : {
+          fullName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        },
+  });
 
-    useEffect(() => {
-      if (props.mode === "edit") {
-        reset(staffToFormData(props.staff));
+  useEffect(() => {
+    if (props.mode === "edit") {
+      reset(staffToFormData(props.staff));
+    }
+  }, [props, reset]);
+
+  useEffect(() => {
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        props.onClose();
       }
-    }, [props, reset]);
+    }
 
-    useEffect(() => {
-      function handleEscape(e: KeyboardEvent) {
-        if (e.key === "Escape") {
-          props.onClose();
-        }
-      }
+    window.addEventListener("keydown", handleEscape);
 
-      window.addEventListener("keydown", handleEscape);
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [props]);
 
-      return () => {
-        window.removeEventListener("keydown", handleEscape);
-      };
-    }, [props]);
-
-    const onSubmit = async (data: CreateStaffFormData | EditStaffFormData) => {
+  const onSubmit = async (data: CreateStaffFormData | EditStaffFormData) => {
     try {
       setSubmitError("");
 
@@ -136,84 +139,11 @@ function StaffFormModal(props: Props) {
           onSubmit={handleSubmit(onSubmit)}
           noValidate
         >
-          <div className="flex flex-col gap-2">
-            <label className="font-semibold text-sm text-gray-700">
-              Full Name
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter staff full name"
-              {...register("fullName")}
-            />
-
-            {errors.fullName && (
-              <p className="text-sm text-red-600">
-                {errors.fullName.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="font-semibold text-sm text-gray-700">
-              Email
-            </label>
-
-            <input
-              type="email"
-              placeholder="staff@trainhub.com"
-              autoComplete="new-email"
-              {...register("email")}
-            />
-
-            {errors.email && (
-              <p className="text-sm text-red-600">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          {!isEditMode && (
-            <>
-              <div className="flex flex-col gap-2">
-                <label className="font-semibold text-sm text-gray-700">
-                  Password
-                </label>
-
-                <input
-                  type="password"
-                  placeholder="Enter temporary password"
-                  autoComplete="new-password"
-                  {...register("password" as keyof CreateStaffFormData)}
-                />
-
-                {"password" in errors && errors.password && (
-                  <p className="text-sm text-red-600">
-                    {errors.password.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label className="font-semibold text-sm text-gray-700">
-                  Confirm Password
-                </label>
-
-                <input
-                  type="password"
-                  placeholder="Confirm temporary password"
-                  autoComplete="new-password"
-                  {...register("confirmPassword" as keyof CreateStaffFormData)}
-                />
-
-                {"confirmPassword" in errors && errors.confirmPassword && (
-                  <p className="text-sm text-red-600">
-                    {errors.confirmPassword.message}
-                  </p>
-                )}
-              </div>
-            </>
-          )}
+          <StaffFormFields
+            register={register}
+            errors={errors}
+            isEditMode={isEditMode}
+          />
 
           {submitError && (
             <p className="mt-2 text-sm font-medium text-red-600">
