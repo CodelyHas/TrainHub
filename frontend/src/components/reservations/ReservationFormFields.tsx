@@ -8,7 +8,6 @@ import type { ReservationFormData } from "../../features/reservations/reservatio
 
 import FormInput from "../FormInput";
 import DropdownIndicator, { type ScheduleOption } from "./DropdownIndicator";
-import { useState } from "react";
 
 interface ReservationFormFieldsProps {
   schedules: Schedule[];
@@ -30,7 +29,6 @@ function ReservationFormFields({
   control,
   errors,
 }: ReservationFormFieldsProps) {
-  const [isPassengerMenuOpen, setIsPassengerMenuOpen] = useState(false);
 
   const passengerOptions: PassengerOption[] = passengers.map((passenger) => ({
     value: passenger.nationalId,
@@ -51,6 +49,27 @@ function ReservationFormFields({
     };
   });
 
+  const selectClassNames = {
+    control: () =>
+      "min-h-11! h-11! border-gray-300!",
+    valueContainer: () =>
+      "h-11! px-3! py-0! flex! items-center!",
+    placeholder: () =>
+      "m-0! text-gray-500!",
+    singleValue: () =>
+      "m-0!",
+    input: () =>
+      "m-0! p-0! absolute! left-3! right-3! [&_input:focus]:shadow-none! [&_input:focus]:outline-none! [&_input:focus]:[--tw-ring-shadow:0_0_#0000]!",
+    indicatorsContainer: () =>
+      "h-11!",
+    option: (state: { isDisabled: boolean; isFocused: boolean }) =>
+      state.isDisabled
+        ? "text-gray-300! bg-white! cursor-not-allowed!"
+        : state.isFocused
+        ? "bg-blue-100! text-gray-900!"
+        : "bg-white! text-gray-900!",
+  };
+
   return (
     <>
       <h2>Ticket Reservation Information</h2>
@@ -62,28 +81,17 @@ function ReservationFormFields({
           name="nationalId"
           control={control}
           render={({ field }) => (
-          <Select<PassengerOption, false>
-            options={passengerOptions}
-            value={
-              passengerOptions.find((option) => option.value === field.value) || null
-            }
-            onChange={(option) => field.onChange(option?.value || "")}
-            placeholder="Select passenger"
-            isSearchable
-            onMenuOpen={() => setIsPassengerMenuOpen(true)}
-            onMenuClose={() => setIsPassengerMenuOpen(false)}
-            controlShouldRenderValue={!isPassengerMenuOpen}
-            styles={{
-              control: (base, state) => ({
-                ...base,
-                boxShadow: state.isFocused ? "none" : base.boxShadow,
-                borderColor: state.isFocused ? "#d1d5db" : base.borderColor,
-                "&:hover": {
-                  borderColor: "#d1d5db",
-                },
-              }),
-            }}
-          />
+            <Select<PassengerOption, false>
+              options={passengerOptions}
+              value={
+                passengerOptions.find((option) => option.value === field.value) || null
+              }
+              onChange={(option) => field.onChange(option?.value || "")}
+              placeholder="Select passenger"
+              isSearchable
+              classNames={selectClassNames}
+              components={{ DropdownIndicator }}
+            />
           )}
         />
 
@@ -104,14 +112,13 @@ function ReservationFormFields({
             <Select<ScheduleOption, false>
               options={scheduleOptions}
               value={
-                scheduleOptions.find(
-                  (option) => option.value === field.value
-                ) || null
+                scheduleOptions.find((option) => option.value === field.value) || null
               }
               onChange={(option) => field.onChange(option?.value || "")}
               placeholder="Select train schedule"
               isSearchable={false}
               isOptionDisabled={(option) => option.isDisabled === true}
+              classNames={selectClassNames}
               components={{ DropdownIndicator }}
             />
           )}
