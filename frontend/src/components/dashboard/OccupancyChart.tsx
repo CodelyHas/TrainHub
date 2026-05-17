@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -14,6 +15,16 @@ interface Props {
 }
 
 function OccupancyChart({ data }: Props) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const timer = requestAnimationFrame(() => {
+      setMounted(true);
+    });
+
+    return () => cancelAnimationFrame(timer);
+  }, []);
+
   if (data.length === 0) {
     return (
       <div className="mt-4 flex h-64 w-full items-center justify-center rounded-md border border-dashed border-gray-300 text-sm text-gray-400">
@@ -22,9 +33,13 @@ function OccupancyChart({ data }: Props) {
     );
   }
 
+  if (!mounted) {
+    return <div className="mt-4 h-72 w-full" />;
+  }
+
   return (
     <div className="mt-4 h-72 w-full min-w-0">
-      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="trainName" />

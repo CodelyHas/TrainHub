@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
+
 import type { Passenger } from "../../features/passengers/passengerTypes";
 import {
   passengerSchema,
@@ -9,6 +10,8 @@ import {
 } from "../../features/passengers/passengerSchema";
 import { passengerToFormData } from "../../features/passengers/passengerForm.mapper";
 import { updatePassengerRequest } from "../../features/passengers/passengerApi";
+
+import PassengerFormFields from "./PassengerFormFields";
 
 interface Props {
   passenger: Passenger;
@@ -23,7 +26,7 @@ function EditPassengerModal({ passenger, onClose, onUpdated }: Props) {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<PassengerFormData>({
     resolver: zodResolver(passengerSchema),
     defaultValues: passengerToFormData(passenger),
@@ -55,6 +58,7 @@ function EditPassengerModal({ passenger, onClose, onUpdated }: Props) {
 
       onUpdated(updatedPassenger);
       toast.success("Passenger updated successfully");
+      onClose();
     } catch (error) {
       const errorMessage =
         error instanceof Error
@@ -70,63 +74,28 @@ function EditPassengerModal({ passenger, onClose, onUpdated }: Props) {
   return (
     <div className="modalContainer">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">
-          Editing {passenger.fullName}
-        </h2>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="h-10 w-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+            <i className="fa-solid fa-user-pen"></i>
+          </div>
 
-        <form 
-          className="editScheduleForm" 
-          onSubmit={handleSubmit(onSubmit)} 
-          noValidate 
+          <h2 className="text-xl font-bold text-gray-900">
+            Edit Passenger
+          </h2>
+        </div>
+
+        <p className="text-sm text-gray-500 mb-6">
+          Update passenger information for{" "}
+          <span className="font-semibold">{passenger.fullName}</span>.
+        </p>
+
+        <form
+          className="editScheduleForm"
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
           autoComplete="off"
         >
-          <div className="flex flex-col gap-2">
-            <label className="font-semibold text-sm text-gray-700">
-              Full Name
-            </label>
-            <input {...register("fullName")} />
-            {errors.fullName && (
-              <p className="text-sm text-red-600">
-                {errors.fullName.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="font-semibold text-sm text-gray-700">
-              National ID
-            </label>
-            <input {...register("nationalId")} />
-            {errors.nationalId && (
-              <p className="text-sm text-red-600">
-                {errors.nationalId.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="font-semibold text-sm text-gray-700">
-              Phone
-            </label>
-            <input {...register("phone")} />
-            {errors.phone && (
-              <p className="text-sm text-red-600">
-                {errors.phone.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="font-semibold text-sm text-gray-700">
-              Email
-            </label>
-            <input {...register("email")} />
-            {errors.email && (
-              <p className="text-sm text-red-600">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
+          <PassengerFormFields register={register} errors={errors} />
 
           {submitError && (
             <p className="mt-2 text-sm font-medium text-red-600">
@@ -138,16 +107,18 @@ function EditPassengerModal({ passenger, onClose, onUpdated }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="hover:cursor-pointer hover:bg-gray-800 bg-gray-700 text-white px-4 py-2 rounded"
+              disabled={isSubmitting}
+              className="hover:cursor-pointer hover:bg-gray-800 bg-gray-700 text-white px-4 py-2 rounded disabled:opacity-60"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="hover:cursor-pointer hover:bg-blue-700 bg-blue-600 text-white px-4 py-2 rounded"
+              disabled={isSubmitting}
+              className="hover:cursor-pointer hover:bg-blue-700 bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-60"
             >
-              Save Changes
+              {isSubmitting ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>
