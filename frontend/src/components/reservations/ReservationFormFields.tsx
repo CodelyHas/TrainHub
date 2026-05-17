@@ -8,6 +8,7 @@ import type { ReservationFormData } from "../../features/reservations/reservatio
 
 import FormInput from "../FormInput";
 import DropdownIndicator, { type ScheduleOption } from "./DropdownIndicator";
+import { useState } from "react";
 
 interface ReservationFormFieldsProps {
   schedules: Schedule[];
@@ -29,6 +30,8 @@ function ReservationFormFields({
   control,
   errors,
 }: ReservationFormFieldsProps) {
+  const [isPassengerMenuOpen, setIsPassengerMenuOpen] = useState(false);
+
   const passengerOptions: PassengerOption[] = passengers.map((passenger) => ({
     value: passenger.nationalId,
     label: `${passenger.fullName} | ${passenger.nationalId}`,
@@ -59,17 +62,28 @@ function ReservationFormFields({
           name="nationalId"
           control={control}
           render={({ field }) => (
-            <Select<PassengerOption, false>
-              options={passengerOptions}
-              value={
-                passengerOptions.find(
-                  (option) => option.value === field.value
-                ) || null
-              }
-              onChange={(option) => field.onChange(option?.value || "")}
-              placeholder="Select passenger"
-              isSearchable
-            />
+          <Select<PassengerOption, false>
+            options={passengerOptions}
+            value={
+              passengerOptions.find((option) => option.value === field.value) || null
+            }
+            onChange={(option) => field.onChange(option?.value || "")}
+            placeholder="Select passenger"
+            isSearchable
+            onMenuOpen={() => setIsPassengerMenuOpen(true)}
+            onMenuClose={() => setIsPassengerMenuOpen(false)}
+            controlShouldRenderValue={!isPassengerMenuOpen}
+            styles={{
+              control: (base, state) => ({
+                ...base,
+                boxShadow: state.isFocused ? "none" : base.boxShadow,
+                borderColor: state.isFocused ? "#d1d5db" : base.borderColor,
+                "&:hover": {
+                  borderColor: "#d1d5db",
+                },
+              }),
+            }}
+          />
           )}
         />
 
