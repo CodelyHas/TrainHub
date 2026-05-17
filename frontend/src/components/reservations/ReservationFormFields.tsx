@@ -50,8 +50,11 @@ function ReservationFormFields({
   });
 
   const selectClassNames = {
-    control: () =>
-      "min-h-11! h-11! border-gray-300!",
+    control: (state: { isFocused: boolean }) =>
+      `min-h-11! h-11! rounded-md! border! border-gray-300! shadow-none! outline-none! ${
+        state.isFocused ? "ring-2! ring-blue-400!" : "ring-0!"
+      }`,
+
     valueContainer: () =>
       "h-11! px-3! py-0! flex! items-center!",
     placeholder: () =>
