@@ -35,6 +35,12 @@ export const createReservation = async (req: Request, res: Response) => {
       });
     }
 
+    if (schedule.departureTime <= new Date()) {
+      return res.status(400).json({
+        error: "This train has already departed",
+      });
+    }
+
     if (schedule.availableSeats < Number(reservationData.seatCount)) {
       return res.status(400).json({
         error: "Not enough seats available",

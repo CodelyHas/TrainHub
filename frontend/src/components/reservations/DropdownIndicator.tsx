@@ -1,10 +1,11 @@
 import { components } from "react-select";
 import type { DropdownIndicatorProps } from "react-select";
 
-export type ScheduleOption = {
+export interface ScheduleOption {
   value: string;
   label: string;
-};
+  isDisabled?: boolean;
+}
 
 function DropdownIndicator(props: DropdownIndicatorProps<ScheduleOption, false>) {
   const isOpen = props.selectProps.menuIsOpen;
