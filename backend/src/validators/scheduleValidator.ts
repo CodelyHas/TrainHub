@@ -15,60 +15,78 @@ export const validateSchedule = (mode: ScheduleValidationMode) => {
       .notEmpty()
       .withMessage("Train name is required"),
 
-    body("departure")
-      .trim()
-      .notEmpty()
-      .withMessage("Departure city is required"),
+      body("departure")
+        .trim()
+        .notEmpty()
+        .withMessage("Departure city is required")
+        .matches(/^[\p{L}\s.'-]+$/u)
+        .withMessage("Departure city must contain letters only"),
 
-    body("arrival")
-      .trim()
-      .notEmpty()
-      .withMessage("Arrival city is required")
-      .custom((arrival, { req }) => {
-        if (
-          String(arrival).trim().toLowerCase() ===
-          String(req.body.departure).trim().toLowerCase()
-        ) {
-          throw new Error("Arrival city cannot be the same as departure city");
-        }
+      body("arrival")
+        .trim()
+        .notEmpty()
+        .withMessage("Arrival city is required")
+        .matches(/^[\p{L}\s.'-]+$/u)
+        .withMessage("Arrival city must contain letters only")
+        .custom((arrival, { req }) => {
+          if (
+            String(arrival).trim().toLowerCase() ===
+            String(req.body.departure).trim().toLowerCase()
+          ) {
+            throw new Error("Arrival city cannot be the same as departure city");
+          }
 
-        return true;
-      }),
+          return true;
+        }),
 
-    body("departureTime")
-      .isISO8601()
-      .withMessage("Departure time must be a valid date")
-      .custom((departureTime) => {
-        const departureDate = new Date(departureTime);
-        const now = new Date();
+      body("departureTime")
+        .isISO8601()
+        .withMessage("Departure time must be a valid date")
+        .custom((departureTime) => {
+          const departureDate = new Date(departureTime);
+          const now = new Date();
 
-        if (mode === "create" && departureDate < now) {
-          throw new Error("Departure time cannot be in the past");
-        }
+          const maxScheduleDate = new Date();
+          maxScheduleDate.setFullYear(maxScheduleDate.getFullYear() + 1);
 
-        return true;
-      }),
+          if (mode === "create" && departureDate < now) {
+            throw new Error("Departure time cannot be in the past");
+          }
 
-    body("arrivalTime")
-      .isISO8601()
-      .withMessage("Arrival time must be a valid date")
-      .custom((arrivalTime, { req }) => {
-        const departureTimeValue = req.body.departureTime;
+          if (departureDate > maxScheduleDate) {
+            throw new Error("Departure time cannot be more than 1 year in the future");
+          }
 
-        const departureTime = new Date(departureTimeValue);
-        const arrivalDate = new Date(arrivalTime);
-        const now = new Date();
+          return true;
+        }),
 
-        if (mode === "create" && arrivalDate < now) {
-          throw new Error("Arrival time cannot be in the past");
-        }
+      body("arrivalTime")
+        .isISO8601()
+        .withMessage("Arrival time must be a valid date")
+        .custom((arrivalTime, { req }) => {
+          const departureTimeValue = req.body.departureTime;
 
-        if (departureTimeValue && arrivalDate <= departureTime) {
-          throw new Error("Arrival time must be after departure time");
-        }
+          const departureTime = new Date(departureTimeValue);
+          const arrivalDate = new Date(arrivalTime);
+          const now = new Date();
 
-        return true;
-      }),
+          const maxScheduleDate = new Date();
+          maxScheduleDate.setFullYear(maxScheduleDate.getFullYear() + 1);
+
+          if (mode === "create" && arrivalDate < now) {
+            throw new Error("Arrival time cannot be in the past");
+          }
+
+          if (arrivalDate > maxScheduleDate) {
+            throw new Error("Arrival time cannot be more than 1 year in the future");
+          }
+
+          if (departureTimeValue && arrivalDate <= departureTime) {
+            throw new Error("Arrival time must be after departure time");
+          }
+
+          return true;
+        }),
 
     body("price")
       .isFloat({ min: 1 })

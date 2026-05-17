@@ -2,14 +2,24 @@ import { z } from "zod";
 
 type ValidationMode = "create" | "edit";
 
+const cityNameRegex = /^[\p{L}\s.'-]+$/u;
+
 export const getScheduleSchema = (mode: ValidationMode) =>
   z
     .object({
       trainName: z.string().trim().min(1, "Train name is required."),
 
-      departure: z.string().trim().min(1, "Departure city is required."),
+      departure: z
+        .string()
+        .trim()
+        .min(1, "Departure city is required.")
+        .regex(cityNameRegex, "Departure city must contain letters only."),
 
-      arrival: z.string().trim().min(1, "Arrival city is required."),
+      arrival: z
+        .string()
+        .trim()
+        .min(1, "Arrival city is required.")
+        .regex(cityNameRegex, "Arrival city must contain letters only."),
 
       departureTime: z.string().min(1, "Departure time is required."),
 
@@ -39,6 +49,9 @@ export const getScheduleSchema = (mode: ValidationMode) =>
       const arrivalTime = new Date(data.arrivalTime);
       const now = new Date();
 
+      const maxScheduleDate = new Date();
+      maxScheduleDate.setFullYear(maxScheduleDate.getFullYear() + 1);
+
       if (departure && arrival && departure === arrival) {
         ctx.addIssue({
           code: "custom",
@@ -52,6 +65,22 @@ export const getScheduleSchema = (mode: ValidationMode) =>
           code: "custom",
           path: ["departureTime"],
           message: "Departure time cannot be in the past.",
+        });
+      }
+
+      if (data.departureTime && departureTime > maxScheduleDate) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["departureTime"],
+          message: "Departure time cannot be more than 1 year in the future.",
+        });
+      }
+
+      if (data.arrivalTime && arrivalTime > maxScheduleDate) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["arrivalTime"],
+          message: "Arrival time cannot be more than 1 year in the future.",
         });
       }
 

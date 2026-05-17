@@ -5,8 +5,10 @@ export const validateCreateStaff = [
     .trim()
     .notEmpty()
     .withMessage("Full name is required")
-    .isLength({ min: 3, max: 100 })
-    .withMessage("Full name must be between 3 and 60 characters"),
+    .isLength({ min: 3, max: 60 })
+    .withMessage("Full name must be between 3 and 60 characters")
+    .matches(/^[\p{L}\s]+$/u)
+    .withMessage("Full name must contain letters and spaces only"),
 
   body("email")
     .trim()

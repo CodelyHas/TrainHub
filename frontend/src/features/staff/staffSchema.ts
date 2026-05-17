@@ -6,13 +6,14 @@ export const staffBaseSchema = z.object({
     .trim()
     .min(1, "Full name is required")
     .min(3, "Full name must be at least 3 characters")
-    .max(60, "Full name must be at most 60 characters"),
+    .max(60, "Full name must be at most 60 characters")
+    .regex(/^[\p{L}\s]+$/u, "Full name must contain letters and spaces only"),
 
   email: z
     .string()
     .trim()
     .min(1, "Email is required")
-    .email("Enter a valid email address"),
+    .pipe(z.email("Enter a valid email address")),
 });
 
 export const createStaffSchema = staffBaseSchema

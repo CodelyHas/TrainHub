@@ -4,7 +4,8 @@ export const passengerSchema = z.object({
   fullName: z
     .string()
     .trim()
-    .min(1, "Full name is required."),
+    .min(1, "Full name is required.")
+    .regex(/^[\p{L}\s]+$/u, "Full name must contain letters and spaces only."),
 
   nationalId: z
     .string()
@@ -22,12 +23,12 @@ export const passengerSchema = z.object({
     .min(7, "Phone number must be between 7 and 15 digits.")
     .max(15, "Phone number must be between 7 and 15 digits."),
 
-email: z
-  .string()
-  .trim()
-  .refine((value) => value === "" || z.email().safeParse(value).success, {
-    message: "Email must be valid.",
-  })
+  email: z
+    .string()
+    .trim()
+    .refine((value) => value === "" || z.email().safeParse(value).success, {
+      message: "Email must be valid.",
+    }),
 });
 
 export type PassengerFormData = z.infer<typeof passengerSchema>;

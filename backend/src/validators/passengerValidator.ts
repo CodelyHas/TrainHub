@@ -10,7 +10,9 @@ export const validatePassenger = [
   body("fullName")
     .trim()
     .notEmpty()
-    .withMessage("Passenger full name is required"),
+    .withMessage("Passenger full name is required")
+    .matches(/^[\p{L}\s]+$/u)
+    .withMessage("Passenger full name must contain letters and spaces only"),
 
   body("nationalId")
     .trim()
