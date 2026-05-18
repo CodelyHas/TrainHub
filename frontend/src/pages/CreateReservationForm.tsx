@@ -169,7 +169,7 @@ function CreateReservationForm() {
               Passenger discount:{" "}
               {discountType === "NONE"
                 ? "No discount"
-                : `${discountType} (${discountRate * 100}%)`}
+                : `${discountType} (${discountRate * 100}% on 1 seat only)`}
             </p>
 
             <p>Original price: {originalPrice} SAR</p>
