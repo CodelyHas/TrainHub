@@ -1,6 +1,9 @@
 export type ReportType = "all" | "booking" | "revenue" | "utilization";
 export type ReportPeriod = "daily" | "weekly" | "monthly";
 
+export type SeatClass = "ECONOMY" | "BUSINESS";
+export type DiscountType = "NONE" | "CHILD" | "STUDENT";
+
 export interface ReportFormData {
   reportType: ReportType;
   period: ReportPeriod;
@@ -19,7 +22,11 @@ export interface BookingReportRow {
   passengerName: string;
   trainName: string;
   route: string;
+  seatClass: SeatClass;
   seatCount: number;
+  originalPrice: number;
+  discountType: DiscountType;
+  discountRate: number;
   totalPrice: number;
   status: string;
   bookingDate: string;
@@ -30,8 +37,12 @@ export interface RevenueReportRow {
   trainName: string;
   route: string;
   passengerName: string;
+  seatClass: SeatClass;
   seatCount: number;
   ticketPrice: number;
+  originalPrice: number;
+  discountType: DiscountType;
+  discountRate: number;
   totalPrice: number;
   bookingDate: string;
 }
@@ -40,9 +51,18 @@ export interface UtilizationReportRow {
   id: number;
   trainName: string;
   route: string;
-  capacity: number;
-  occupiedSeats: number;
-  availableSeats: number;
+
+  economyCapacity: number;
+  economyOccupiedSeats: number;
+  economyAvailableSeats: number;
+
+  businessCapacity: number;
+  businessOccupiedSeats: number;
+  businessAvailableSeats: number;
+
+  totalCapacity: number;
+  totalOccupiedSeats: number;
+  totalAvailableSeats: number;
   utilizationRate: number;
 }
 

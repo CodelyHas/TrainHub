@@ -16,16 +16,19 @@ function RevenueReportTable({ rows }: Props) {
       </div>
 
       <div className="overflow-auto">
-        <table className="w-full min-w-240 border-collapse">
+        <table className="w-full min-w-325 border-collapse">
           <thead className="bg-gray-100">
             <tr className="tableHeaders">
               <th>ID</th>
               <th>Train</th>
               <th>Route</th>
               <th>Passenger</th>
+              <th>Class</th>
               <th>Seats</th>
               <th>Ticket Price</th>
-              <th>Total Price</th>
+              <th>Original Price</th>
+              <th>Discount</th>
+              <th>Total Revenue</th>
               <th>Booking Date</th>
             </tr>
           </thead>
@@ -33,7 +36,7 @@ function RevenueReportTable({ rows }: Props) {
           <tbody>
             {rows.length === 0 ? (
               <tr className="tableCells text-center">
-                <td colSpan={8} className="py-6 text-sm text-gray-500">
+                <td colSpan={11} className="py-6 text-sm text-gray-500">
                   No revenue report generated yet.
                 </td>
               </tr>
@@ -47,8 +50,15 @@ function RevenueReportTable({ rows }: Props) {
                   <td>{row.trainName}</td>
                   <td>{row.route}</td>
                   <td>{row.passengerName}</td>
+                  <td>{row.seatClass}</td>
                   <td>{row.seatCount}</td>
                   <td>{row.ticketPrice} SAR</td>
+                  <td>{row.originalPrice} SAR</td>
+                  <td>
+                    {row.discountType === "NONE"
+                      ? "—"
+                      : `${row.discountType} (${row.discountRate * 100}%)`}
+                  </td>
                   <td>{row.totalPrice} SAR</td>
                   <td>{new Date(row.bookingDate).toLocaleString()}</td>
                 </tr>

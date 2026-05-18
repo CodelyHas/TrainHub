@@ -10,19 +10,25 @@ function UtilizationReportTable({ rows }: Props) {
       <div className="mb-4">
         <h3 className="font-bold text-gray-900">Train Utilization Report</h3>
         <p className="mt-1 text-sm text-gray-500">
-          Shows seat usage and occupancy rate for each train schedule.
+          Shows economy, business, and total seat usage for each train schedule.
         </p>
       </div>
 
       <div className="overflow-auto">
-        <table className="w-full min-w-220 border-collapse">
+        <table className="w-full min-w-350 border-collapse">
           <thead className="bg-gray-100">
             <tr className="tableHeaders">
               <th>Train</th>
               <th>Route</th>
-              <th>Capacity</th>
-              <th>Occupied Seats</th>
-              <th>Available Seats</th>
+              <th>Economy Capacity</th>
+              <th>Economy Occupied</th>
+              <th>Economy Available</th>
+              <th>Business Capacity</th>
+              <th>Business Occupied</th>
+              <th>Business Available</th>
+              <th>Total Capacity</th>
+              <th>Total Occupied</th>
+              <th>Total Available</th>
               <th>Utilization Rate</th>
             </tr>
           </thead>
@@ -30,7 +36,7 @@ function UtilizationReportTable({ rows }: Props) {
           <tbody>
             {rows.length === 0 ? (
               <tr className="tableCells text-center">
-                <td colSpan={6} className="py-6 text-sm text-gray-500">
+                <td colSpan={12} className="py-6 text-sm text-gray-500">
                   No utilization report generated yet.
                 </td>
               </tr>
@@ -42,9 +48,15 @@ function UtilizationReportTable({ rows }: Props) {
                 >
                   <td>{row.trainName}</td>
                   <td>{row.route}</td>
-                  <td>{row.capacity}</td>
-                  <td>{row.occupiedSeats}</td>
-                  <td>{row.availableSeats}</td>
+                  <td>{row.economyCapacity}</td>
+                  <td>{row.economyOccupiedSeats}</td>
+                  <td>{row.economyAvailableSeats}</td>
+                  <td>{row.businessCapacity}</td>
+                  <td>{row.businessOccupiedSeats}</td>
+                  <td>{row.businessAvailableSeats}</td>
+                  <td>{row.totalCapacity}</td>
+                  <td>{row.totalOccupiedSeats}</td>
+                  <td>{row.totalAvailableSeats}</td>
                   <td>{row.utilizationRate}%</td>
                 </tr>
               ))
