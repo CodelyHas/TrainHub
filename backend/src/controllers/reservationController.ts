@@ -84,7 +84,9 @@ export const createReservation = async (req: Request, res: Response) => {
       passenger.isStudent
     );
 
-    const totalPrice = originalPrice * (1 - discountRate);
+    const discountAmount = seatCount > 0 ? selectedPrice * discountRate : 0;
+
+    const totalPrice = originalPrice - discountAmount;
 
     const reservation = await prisma.$transaction(async (tx) => {
       const createdReservation = await tx.reservation.create({
