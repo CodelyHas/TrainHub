@@ -12,29 +12,59 @@ datasource db {
   
 }
 
-model TrainSchedule {
-  id             Int      @id @default(autoincrement())
-  trainName      String
-  departure      String
-  arrival        String
-  departureTime  DateTime
-  arrivalTime    DateTime
-  price          Float
-  capacity       Int
-  availableSeats Int
-  createdAt      DateTime @default(now())
+enum SeatClass {
+  ECONOMY
+  BUSINESS
+}
 
-  reservations   Reservation[]
+enum AgeGroup {
+  ADULT
+  CHILD
+}
+
+enum DiscountType {
+  NONE
+  CHILD
+  STUDENT
+}
+
+enum UserRole {
+  ADMIN
+  STAFF
+}
+
+model TrainSchedule {
+  id                     Int      @id @default(autoincrement())
+  trainName              String
+  departure              String
+  arrival                String
+  departureTime          DateTime
+  arrivalTime            DateTime
+
+  economyPrice           Float
+  businessPrice          Float
+
+  economyCapacity        Int
+  businessCapacity       Int
+
+  economyAvailableSeats  Int
+  businessAvailableSeats Int
+
+  createdAt              DateTime @default(now())
+
+  reservations           Reservation[]
 }
 
 model Passenger {
-  id         Int      @id @default(autoincrement())
-  fullName   String
-  nationalId String   @unique
-  phone      String
-  email      String?
-  status     String   @default("ACTIVE")
-  createdAt  DateTime @default(now())
+  id            Int           @id @default(autoincrement())
+  fullName      String
+  nationalId    String        @unique
+  phone         String
+  email         String?
+  status        String        @default("ACTIVE")
+  ageGroup  AgeGroup @default(ADULT)
+  isStudent Boolean  @default(false)
+  createdAt     DateTime      @default(now())
 
   reservations Reservation[]
 }
@@ -48,15 +78,16 @@ model Reservation {
   passenger   Passenger     @relation(fields: [passengerId], references: [id])
   schedule    TrainSchedule @relation(fields: [scheduleId], references: [id])
 
-  seatCount   Int
-  totalPrice  Float
+  seatClass    SeatClass
+  seatCount    Int
+
+  originalPrice Float
+  discountType  DiscountType @default(NONE)
+  discountRate  Float
+  totalPrice    Float
+
   status      String   @default("CONFIRMED")
   createdAt   DateTime @default(now())
-}
-
-enum UserRole {
-  ADMIN
-  STAFF
 }
 
 model User {

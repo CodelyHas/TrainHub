@@ -20,7 +20,17 @@ export const createScheduleRequest = async (
   const result = await response.json();
 
   if (!response.ok) {
-    throw new Error(result.message || result.error || "Failed to create schedule");
+    const validationError =
+      Array.isArray(result.errors) && result.errors.length > 0
+        ? result.errors[0].msg
+        : null;
+
+    throw new Error(
+      validationError ||
+        result.message ||
+        result.error ||
+        "Failed to create schedule"
+    );
   }
 
   return result;
@@ -55,7 +65,17 @@ export const updateScheduleRequest = async (
   const result = await response.json();
 
   if (!response.ok) {
-    throw new Error(result.message || result.error || "Failed to update schedule");
+    const validationError =
+      Array.isArray(result.errors) && result.errors.length > 0
+        ? result.errors[0].msg
+        : null;
+
+    throw new Error(
+      validationError ||
+        result.message ||
+        result.error ||
+        "Failed to update schedule"
+    );
   }
 
   return result;

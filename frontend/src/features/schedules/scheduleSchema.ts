@@ -36,20 +36,36 @@ export const getScheduleSchema = (mode: ValidationMode) =>
         .min(1, "Arrival time is required.")
         .refine(isValidDate, "Arrival time must be a valid date."),
 
-      price: z
+      economyPrice: z
         .string()
         .trim()
-        .min(1, "Ticket price is required.")
+        .min(1, "Economy price is required.")
         .refine((value) => Number(value) >= 1, {
-          message: "Ticket price must be at least 1.",
+          message: "Economy price must be at least 1.",
         }),
 
-      capacity: z
+      businessPrice: z
         .string()
         .trim()
-        .min(1, "Train capacity is required.")
+        .min(1, "Business price is required.")
         .refine((value) => Number(value) >= 1, {
-          message: "Train capacity must be at least 1.",
+          message: "Business price must be at least 1.",
+        }),
+
+      economyCapacity: z
+        .string()
+        .trim()
+        .min(1, "Economy capacity is required.")
+        .refine((value) => Number(value) >= 1, {
+          message: "Economy capacity must be at least 1.",
+        }),
+
+      businessCapacity: z
+        .string()
+        .trim()
+        .min(1, "Business capacity is required.")
+        .refine((value) => Number(value) >= 1, {
+          message: "Business capacity must be at least 1.",
         }),
     })
     .superRefine((data, ctx) => {
@@ -70,6 +86,36 @@ export const getScheduleSchema = (mode: ValidationMode) =>
 
       const maxScheduleDate = new Date();
       maxScheduleDate.setFullYear(maxScheduleDate.getFullYear() + 1);
+
+      const economyCapacity = Number(data.economyCapacity);
+      const businessCapacity = Number(data.businessCapacity);
+
+      if (
+        data.economyCapacity &&
+        data.businessCapacity &&
+        businessCapacity > economyCapacity
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["businessCapacity"],
+          message: "Business capacity cannot be greater than economy capacity.",
+        });
+      }
+
+      const economyPrice = Number(data.economyPrice);
+      const businessPrice = Number(data.businessPrice);
+
+      if (
+        data.economyPrice &&
+        data.businessPrice &&
+        businessPrice <= economyPrice
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["businessPrice"],
+          message: "Business price must be greater than economy price.",
+        });
+      }
 
       if (departure && arrival && departure === arrival) {
         ctx.addIssue({

@@ -9,5 +9,7 @@ export const passengerToFormData = (
     nationalId: passenger.nationalId,
     phone: passenger.phone,
     email: passenger.email || "",
+    ageGroup: passenger.ageGroup || "ADULT",
+    isStudent: passenger.isStudent || false,
   };
 };

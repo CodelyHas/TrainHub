@@ -60,20 +60,49 @@ function BookingConfirmationModal({ reservation, onClose }: Props) {
                   {reservation.nationalId}
                 </p>
               )}
+
+              {reservation.ageGroup && (
+                <p className="text-sm text-gray-700 mt-2">
+                  <span className="font-semibold">Age Group:</span>{" "}
+                  {reservation.ageGroup}
+                </p>
+              )}
+
+              <p className="text-sm text-gray-700 mt-2">
+                <span className="font-semibold">Student:</span>{" "}
+                {reservation.isStudent ? "Yes" : "No"}
+              </p>
             </div>
 
             <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-              <h3 className="font-bold text-gray-800 mb-3">
-                Ticket Details
-              </h3>
+              <h3 className="font-bold text-gray-800 mb-3">Ticket Details</h3>
 
               <p className="text-sm text-gray-700">
+                <span className="font-semibold">Seat Class:</span>{" "}
+                {reservation.seatClass}
+              </p>
+
+              <p className="text-sm text-gray-700 mt-2">
                 <span className="font-semibold">Reserved Seats:</span>{" "}
                 {reservation.seatCount}
               </p>
 
               <p className="text-sm text-gray-700 mt-2">
-                <span className="font-semibold">Total Price:</span>{" "}
+                <span className="font-semibold">Original Price:</span>{" "}
+                {reservation.originalPrice} SAR
+              </p>
+
+              <p className="text-sm text-gray-700 mt-2">
+                <span className="font-semibold">Discount:</span>{" "}
+                {reservation.discountType === "NONE"
+                  ? "No discount"
+                  : `${reservation.discountType} (${
+                      reservation.discountRate * 100
+                    }%)`}
+              </p>
+
+              <p className="text-sm text-gray-700 mt-2">
+                <span className="font-semibold">Final Total:</span>{" "}
                 {reservation.totalPrice} SAR
               </p>
             </div>

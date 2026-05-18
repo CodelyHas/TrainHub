@@ -21,7 +21,6 @@ function CreateReservationForm() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [passengers, setPassengers] = useState<Passenger[]>([]);
   const [loadingData, setLoadingData] = useState(true);
-
   const [submitError, setSubmitError] = useState("");
 
   const {
@@ -35,8 +34,14 @@ function CreateReservationForm() {
     resolver: zodResolver(reservationSchema),
   });
 
+  const selectedNationalId = watch("nationalId");
   const selectedScheduleId = watch("scheduleId");
+  const selectedSeatClass = watch("seatClass");
   const seatCountValue = watch("seatCount");
+
+  const selectedPassenger = passengers.find(
+    (passenger) => passenger.nationalId === selectedNationalId
+  );
 
   const selectedSchedule = schedules.find(
     (schedule) => String(schedule.id) === selectedScheduleId
@@ -44,8 +49,30 @@ function CreateReservationForm() {
 
   const seatCount = Number(seatCountValue);
 
-  const totalPrice =
-    selectedSchedule && seatCount > 0 ? selectedSchedule.price * seatCount : 0;
+  const selectedPrice =
+    selectedSchedule && selectedSeatClass === "BUSINESS"
+      ? selectedSchedule.businessPrice
+      : selectedSchedule?.economyPrice;
+
+  const discountRate =
+    selectedPassenger?.ageGroup === "CHILD"
+      ? 0.5
+      : selectedPassenger?.isStudent
+      ? 0.2
+      : 0;
+
+  const discountType =
+    selectedPassenger?.ageGroup === "CHILD"
+      ? "CHILD"
+      : selectedPassenger?.isStudent
+      ? "STUDENT"
+      : "NONE";
+
+  const originalPrice =
+    selectedPrice && seatCount > 0 ? selectedPrice * seatCount : 0;
+
+  const discountAmount = originalPrice * discountRate;
+  const totalPrice = originalPrice - discountAmount;
 
   useEffect(() => {
     async function loadReservationData() {
@@ -80,9 +107,8 @@ function CreateReservationForm() {
     try {
       setSubmitError("");
 
-      const createdReservation = await createReservationRequest(data);
+      await createReservationRequest(data);
 
-      console.log("Reservation created:", createdReservation);
       toast.success("Reservation created successfully");
       reset();
     } catch (error) {
@@ -127,11 +153,27 @@ function CreateReservationForm() {
               Route: {selectedSchedule.departure} → {selectedSchedule.arrival}
             </p>
 
-            <p>Price per seat: {selectedSchedule.price} SAR</p>
+            <p>
+              Seat class:{" "}
+              {selectedSeatClass === "BUSINESS" ? "Business" : "Economy"}
+            </p>
+
+            <p>Price per seat: {selectedPrice || 0} SAR</p>
 
             <p>Seat count: {seatCount > 0 ? seatCount : 0}</p>
 
-            <p className="font-semibold">Total price: {totalPrice} SAR</p>
+            <p>
+              Passenger discount:{" "}
+              {discountType === "NONE"
+                ? "No discount"
+                : `${discountType} (${discountRate * 100}%)`}
+            </p>
+
+            <p>Original price: {originalPrice} SAR</p>
+
+            <p>Discount amount: {discountAmount} SAR</p>
+
+            <p className="font-semibold">Final total: {totalPrice} SAR</p>
           </div>
         )}
 

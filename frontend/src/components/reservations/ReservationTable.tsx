@@ -10,7 +10,7 @@ function ReservationTable({ reservations, onViewReceipt, onCancel }: Props) {
   return (
     <div className="bg-white border border-gray-200 shadow-sm">
       <div className="max-h-125 overflow-auto">
-        <table className="min-w-275 w-full border-collapse">
+        <table className="min-w-325 w-full border-collapse">
           <thead className="bg-gray-200 sticky top-0 z-10 shadow-sm">
             <tr className="tableHeaders">
               <th>Passenger</th>
@@ -19,7 +19,10 @@ function ReservationTable({ reservations, onViewReceipt, onCancel }: Props) {
               <th>To</th>
               <th>Departure</th>
               <th>Arrival</th>
+              <th>Class</th>
               <th>Seats</th>
+              <th>Discount</th>
+              <th>Total</th>
               <th>Status</th>
               <th className="min-w-28">Actions</th>
             </tr>
@@ -35,11 +38,18 @@ function ReservationTable({ reservations, onViewReceipt, onCancel }: Props) {
                 <td>{reservation.trainName}</td>
                 <td>{reservation.departure}</td>
                 <td>{reservation.arrival}</td>
-                <td>
-                  {new Date(reservation.departureTime).toLocaleString()}
-                </td>
+                <td>{new Date(reservation.departureTime).toLocaleString()}</td>
                 <td>{new Date(reservation.arrivalTime).toLocaleString()}</td>
+                <td>{reservation.seatClass}</td>
                 <td>{reservation.seatCount}</td>
+                <td>
+                  {reservation.discountType === "NONE"
+                    ? "—"
+                    : `${reservation.discountType} (${
+                        reservation.discountRate * 100
+                      }%)`}
+                </td>
+                <td>{reservation.totalPrice} SAR</td>
 
                 <td>
                   <span

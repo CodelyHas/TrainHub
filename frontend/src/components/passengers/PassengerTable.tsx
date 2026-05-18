@@ -17,13 +17,15 @@ function PassengerTable({
   return (
     <div className="bg-white border border-gray-200 shadow-sm">
       <div className="max-h-125 overflow-auto">
-        <table className="min-w-220 w-full border-collapse">
+        <table className="min-w-260 w-full border-collapse">
           <thead className="bg-gray-200 sticky top-0 z-10 shadow-sm">
             <tr className="tableHeaders">
               <th>Full Name</th>
               <th>National ID</th>
               <th>Phone</th>
               <th>Email</th>
+              <th>Age Group</th>
+              <th>Student</th>
               <th>Status</th>
               <th className="min-w-28">Actions</th>
             </tr>
@@ -39,6 +41,8 @@ function PassengerTable({
                 <td>{passenger.nationalId}</td>
                 <td>{passenger.phone}</td>
                 <td>{passenger.email || "—"}</td>
+                <td>{passenger.ageGroup}</td>
+                <td>{passenger.isStudent ? "Yes" : "No"}</td>
 
                 <td>
                   <span

@@ -18,6 +18,10 @@ export const reservationSchema = z.object({
       message: "Train schedule is required.",
     }),
 
+  seatClass: z.enum(["ECONOMY", "BUSINESS"], {
+    message: "Seat class is required.",
+  }),
+
   seatCount: z
     .string()
     .trim()

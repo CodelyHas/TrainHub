@@ -82,11 +82,27 @@ export const generateReport = async (req: Request, res: Response) => {
     });
 
     const utilizationReport = schedules.map((schedule) => {
-      const occupiedSeats = confirmedReservations
-        .filter((reservation) => reservation.scheduleId === schedule.id)
+      const economyOccupiedSeats = confirmedReservations
+        .filter(
+          (reservation) =>
+            reservation.scheduleId === schedule.id &&
+            reservation.seatClass === "ECONOMY"
+        )
         .reduce((total, reservation) => total + reservation.seatCount, 0);
 
-      return formatUtilizationReportRow(schedule, occupiedSeats);
+      const businessOccupiedSeats = confirmedReservations
+        .filter(
+          (reservation) =>
+            reservation.scheduleId === schedule.id &&
+            reservation.seatClass === "BUSINESS"
+        )
+        .reduce((total, reservation) => total + reservation.seatCount, 0);
+
+      return formatUtilizationReportRow(
+        schedule,
+        economyOccupiedSeats,
+        businessOccupiedSeats
+      );
     });
 
     return res.status(200).json({

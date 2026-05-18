@@ -12,20 +12,35 @@ import { createPassengerRequest } from "../features/passengers/passengerApi";
 function PassengerRegistrationForm() {
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<PassengerFormData>({
     resolver: zodResolver(passengerSchema),
+    defaultValues: {
+      fullName: "",
+      nationalId: "",
+      phone: "",
+      email: "",
+      ageGroup: "ADULT",
+      isStudent: false,
+    },
   });
 
   const onSubmit = async (data: PassengerFormData) => {
     try {
-      const createdPassenger = await createPassengerRequest(data);
+      await createPassengerRequest(data);
 
-      console.log("Passenger registered:", createdPassenger);
       toast.success("Passenger registered successfully");
-      reset();
+      reset({
+        fullName: "",
+        nationalId: "",
+        phone: "",
+        email: "",
+        ageGroup: "ADULT",
+        isStudent: false,
+      });
     } catch (error) {
       const errorMessage =
         error instanceof Error
@@ -39,8 +54,17 @@ function PassengerRegistrationForm() {
 
   return (
     <div className="w-full">
-      <form className="Form" onSubmit={handleSubmit(onSubmit)} noValidate autoComplete="off">
-        <PassengerFormFields register={register} errors={errors} />
+      <form
+        className="Form"
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+        autoComplete="off"
+      >
+        <PassengerFormFields
+          register={register}
+          control={control}
+          errors={errors}
+        />
 
         <button className="cursor-pointer font-semibold" type="submit">
           Register Passenger

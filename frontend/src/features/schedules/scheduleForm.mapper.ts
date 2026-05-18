@@ -15,7 +15,11 @@ export function scheduleToFormData(schedule: Schedule): ScheduleFormData {
     arrival: schedule.arrival,
     departureTime: formatDateTimeLocal(schedule.departureTime),
     arrivalTime: formatDateTimeLocal(schedule.arrivalTime),
-    price: String(schedule.price),
-    capacity: String(schedule.capacity),
+
+    economyPrice: String(schedule.economyPrice),
+    businessPrice: String(schedule.businessPrice),
+
+    economyCapacity: String(schedule.economyCapacity),
+    businessCapacity: String(schedule.businessCapacity),
   };
 }

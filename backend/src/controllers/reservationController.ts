@@ -6,10 +6,32 @@ import {
   formatReservationResponse,
 } from "../dtos/reservation.dto.ts";
 
+const getDiscountDetails = (ageGroup: string, isStudent: boolean) => {
+  if (ageGroup === "CHILD") {
+    return {
+      discountType: "CHILD" as const,
+      discountRate: 0.5,
+    };
+  }
+
+  if (isStudent) {
+    return {
+      discountType: "STUDENT" as const,
+      discountRate: 0.2,
+    };
+  }
+
+  return {
+    discountType: "NONE" as const,
+    discountRate: 0,
+  };
+};
 
 export const createReservation = async (req: Request, res: Response) => {
   try {
     const reservationData = req.body as ReservationDTO;
+    const seatCount = Number(reservationData.seatCount);
+    const isBusiness = reservationData.seatClass === "BUSINESS";
 
     const passenger = await prisma.passenger.findUnique({
       where: {
@@ -41,39 +63,65 @@ export const createReservation = async (req: Request, res: Response) => {
       });
     }
 
-    if (schedule.availableSeats < Number(reservationData.seatCount)) {
+    const selectedAvailableSeats = isBusiness
+      ? schedule.businessAvailableSeats
+      : schedule.economyAvailableSeats;
+
+    const selectedPrice = isBusiness
+      ? schedule.businessPrice
+      : schedule.economyPrice;
+
+    if (selectedAvailableSeats < seatCount) {
       return res.status(400).json({
-        error: "Not enough seats available",
+        error: `Not enough ${reservationData.seatClass.toLowerCase()} seats available`,
       });
     }
 
-    const totalPrice = schedule.price * Number(reservationData.seatCount);
+    const originalPrice = selectedPrice * seatCount;
 
-    const reservation = await prisma.reservation.create({
-      data: createReservationDTO(
-        reservationData,
-        passenger.id,
-        totalPrice
-      ),
-      include: {
-        passenger: true,
-        schedule: true,
-      },
+    const { discountType, discountRate } = getDiscountDetails(
+      passenger.ageGroup,
+      passenger.isStudent
+    );
+
+    const totalPrice = originalPrice * (1 - discountRate);
+
+    const reservation = await prisma.$transaction(async (tx) => {
+      const createdReservation = await tx.reservation.create({
+        data: createReservationDTO(
+          reservationData,
+          passenger.id,
+          originalPrice,
+          discountType,
+          discountRate,
+          totalPrice
+        ),
+        include: {
+          passenger: true,
+          schedule: true,
+        },
+      });
+
+      await tx.trainSchedule.update({
+        where: {
+          id: schedule.id,
+        },
+        data: isBusiness
+          ? {
+              businessAvailableSeats: selectedAvailableSeats - seatCount,
+            }
+          : {
+              economyAvailableSeats: selectedAvailableSeats - seatCount,
+            },
+      });
+
+      return createdReservation;
     });
 
-    await prisma.trainSchedule.update({
-      where: {
-        id: schedule.id,
-      },
-      data: {
-        availableSeats: schedule.availableSeats - Number(reservationData.seatCount),
-      },
+    return res.status(201).json({
+      message: "Reservation created successfully",
+      reservation: formatReservationResponse(reservation),
     });
-
-  return res.status(201).json({
-    message: "Reservation created successfully",
-    reservation: formatReservationResponse(reservation),
-  });
   } catch (error) {
     console.error("Error creating reservation:", error);
 
@@ -147,11 +195,18 @@ export const cancelReservation = async (req: Request, res: Response) => {
         where: {
           id: reservation.scheduleId,
         },
-        data: {
-          availableSeats: {
-            increment: reservation.seatCount,
-          },
-        },
+        data:
+          reservation.seatClass === "BUSINESS"
+            ? {
+                businessAvailableSeats: {
+                  increment: reservation.seatCount,
+                },
+              }
+            : {
+                economyAvailableSeats: {
+                  increment: reservation.seatCount,
+                },
+              },
       });
 
       return cancelledReservation;

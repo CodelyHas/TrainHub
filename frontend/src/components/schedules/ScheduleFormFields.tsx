@@ -55,11 +55,11 @@ function ScheduleFormFields({ register, errors }: ScheduleFormFieldsProps) {
       />
 
       <FormInput
-        label="Price"
-        placeholder="Enter ticket price"
+        label="Economy Price"
+        placeholder="Enter economy ticket price"
         inputMode="numeric"
-        error={errors.price?.message}
-        {...register("price", {
+        error={errors.economyPrice?.message}
+        {...register("economyPrice", {
           onChange: (e) => {
             e.target.value = e.target.value.replace(/[^0-9.]/g, "");
           },
@@ -67,11 +67,35 @@ function ScheduleFormFields({ register, errors }: ScheduleFormFieldsProps) {
       />
 
       <FormInput
-        label="Capacity"
-        placeholder="Enter train capacity"
+        label="Business Price"
+        placeholder="Enter business ticket price"
         inputMode="numeric"
-        error={errors.capacity?.message}
-        {...register("capacity", {
+        error={errors.businessPrice?.message}
+        {...register("businessPrice", {
+          onChange: (e) => {
+            e.target.value = e.target.value.replace(/[^0-9.]/g, "");
+          },
+        })}
+      />
+
+      <FormInput
+        label="Economy Capacity"
+        placeholder="Enter economy seat capacity"
+        inputMode="numeric"
+        error={errors.economyCapacity?.message}
+        {...register("economyCapacity", {
+          onChange: (e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, "");
+          },
+        })}
+      />
+
+      <FormInput
+        label="Business Capacity"
+        placeholder="Enter business seat capacity"
+        inputMode="numeric"
+        error={errors.businessCapacity?.message}
+        {...register("businessCapacity", {
           onChange: (e) => {
             e.target.value = e.target.value.replace(/[^0-9]/g, "");
           },

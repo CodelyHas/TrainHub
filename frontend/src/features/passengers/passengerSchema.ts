@@ -29,6 +29,12 @@ export const passengerSchema = z.object({
     .refine((value) => value === "" || z.email().safeParse(value).success, {
       message: "Email must be valid.",
     }),
+
+  ageGroup: z.enum(["ADULT", "CHILD"], {
+    message: "Age group is required.",
+  }),
+
+  isStudent: z.boolean(),
 });
 
 export type PassengerFormData = z.infer<typeof passengerSchema>;

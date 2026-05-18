@@ -14,6 +14,7 @@ export const formatBookingReportRow = (reservation: any) => {
     passengerName: reservation.passenger.fullName,
     trainName: reservation.schedule.trainName,
     route: `${reservation.schedule.departure} → ${reservation.schedule.arrival}`,
+    seatClass: reservation.seatClass,
     seatCount: reservation.seatCount,
     totalPrice: reservation.totalPrice,
     status: reservation.status,
@@ -22,31 +23,65 @@ export const formatBookingReportRow = (reservation: any) => {
 };
 
 export const formatRevenueReportRow = (reservation: any) => {
+  const ticketPrice =
+    reservation.seatClass === "BUSINESS"
+      ? reservation.schedule.businessPrice
+      : reservation.schedule.economyPrice;
+
   return {
     id: reservation.id,
     trainName: reservation.schedule.trainName,
     route: `${reservation.schedule.departure} → ${reservation.schedule.arrival}`,
     passengerName: reservation.passenger.fullName,
+    seatClass: reservation.seatClass,
     seatCount: reservation.seatCount,
-    ticketPrice: reservation.schedule.price,
+    ticketPrice,
     totalPrice: reservation.totalPrice,
     bookingDate: reservation.createdAt,
   };
 };
 
-export const formatUtilizationReportRow = (schedule: any, occupiedSeats: number) => {
+export const formatUtilizationReportRow = (
+  schedule: any,
+  economyOccupiedSeats: number,
+  businessOccupiedSeats: number
+) => {
+  const economyAvailableSeats =
+    schedule.economyCapacity - economyOccupiedSeats;
+
+  const businessAvailableSeats =
+    schedule.businessCapacity - businessOccupiedSeats;
+
+  const totalCapacity =
+    schedule.economyCapacity + schedule.businessCapacity;
+
+  const totalOccupiedSeats =
+    economyOccupiedSeats + businessOccupiedSeats;
+
+  const totalAvailableSeats =
+    economyAvailableSeats + businessAvailableSeats;
+
   const utilizationRate =
-    schedule.capacity > 0
-      ? Number(((occupiedSeats / schedule.capacity) * 100).toFixed(2))
+    totalCapacity > 0
+      ? Number(((totalOccupiedSeats / totalCapacity) * 100).toFixed(2))
       : 0;
 
   return {
     id: schedule.id,
     trainName: schedule.trainName,
     route: `${schedule.departure} → ${schedule.arrival}`,
-    capacity: schedule.capacity,
-    occupiedSeats,
-    availableSeats: schedule.capacity - occupiedSeats,
+
+    economyCapacity: schedule.economyCapacity,
+    economyOccupiedSeats,
+    economyAvailableSeats,
+
+    businessCapacity: schedule.businessCapacity,
+    businessOccupiedSeats,
+    businessAvailableSeats,
+
+    totalCapacity,
+    totalOccupiedSeats,
+    totalAvailableSeats,
     utilizationRate,
   };
 };

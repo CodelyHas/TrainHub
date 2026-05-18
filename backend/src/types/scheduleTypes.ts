@@ -4,8 +4,12 @@ interface ScheduleDTO {
   arrival: string;
   departureTime: string;
   arrivalTime: string;
-  price: number;
-  capacity: number;
-};
+
+  economyPrice: number;
+  businessPrice: number;
+
+  economyCapacity: number;
+  businessCapacity: number;
+}
 
 export default ScheduleDTO;

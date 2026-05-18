@@ -5,9 +5,15 @@ export interface Schedule {
   arrival: string;
   departureTime: string;
   arrivalTime: string;
-  price: number;
-  capacity: number;
-  availableSeats: number;
+
+  economyPrice: number;
+  businessPrice: number;
+
+  economyCapacity: number;
+  businessCapacity: number;
+
+  economyAvailableSeats: number;
+  businessAvailableSeats: number;
 }
 
 export interface ScheduleDTO {
@@ -16,6 +22,10 @@ export interface ScheduleDTO {
   arrival: string;
   departureTime: string;
   arrivalTime: string;
-  price: number;
-  capacity: number;
+
+  economyPrice: number;
+  businessPrice: number;
+
+  economyCapacity: number;
+  businessCapacity: number;
 }

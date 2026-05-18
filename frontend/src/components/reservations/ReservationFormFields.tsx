@@ -1,13 +1,14 @@
 import type { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import { Controller } from "react-hook-form";
 import Select from "react-select";
+import type { ClassNamesConfig } from "react-select";
 
 import type { Schedule } from "../../features/schedules/scheduleTypes";
 import type { Passenger } from "../../features/passengers/passengerTypes";
 import type { ReservationFormData } from "../../features/reservations/reservationSchema";
 
 import FormInput from "../FormInput";
-import DropdownIndicator, { type ScheduleOption } from "./DropdownIndicator";
+import DropdownIndicator, { type SelectOption } from "./DropdownIndicator";
 
 interface ReservationFormFieldsProps {
   schedules: Schedule[];
@@ -17,11 +18,6 @@ interface ReservationFormFieldsProps {
   errors: FieldErrors<ReservationFormData>;
 }
 
-interface PassengerOption {
-  value: string;
-  label: string;
-}
-
 function ReservationFormFields({
   schedules,
   passengers,
@@ -29,43 +25,50 @@ function ReservationFormFields({
   control,
   errors,
 }: ReservationFormFieldsProps) {
-
-  const passengerOptions: PassengerOption[] = passengers.map((passenger) => ({
+  const passengerOptions: SelectOption[] = passengers.map((passenger) => ({
     value: passenger.nationalId,
     label: `${passenger.fullName} | ${passenger.nationalId}`,
   }));
 
-  const scheduleOptions: ScheduleOption[] = schedules.map((schedule) => {
+  const scheduleOptions: SelectOption[] = schedules.map((schedule) => {
     const hasDeparted = new Date(schedule.departureTime) <= new Date();
 
     return {
       value: String(schedule.id),
       label: `${schedule.trainName} | ${schedule.departure} → ${
         schedule.arrival
-      } | ${new Date(schedule.departureTime).toLocaleString()} | ${
-        schedule.price
-      } SAR${hasDeparted ? " | Departed" : ""}`,
+      } | ${new Date(schedule.departureTime).toLocaleString()} | Economy: ${
+        schedule.economyPrice
+      } SAR | Business: ${schedule.businessPrice} SAR${
+        hasDeparted ? " | Departed" : ""
+      }`,
       isDisabled: hasDeparted,
     };
   });
 
-  const selectClassNames = {
-    control: (state: { isFocused: boolean }) =>
+  const seatClassOptions: SelectOption[] = [
+    { value: "ECONOMY", label: "Economy" },
+    { value: "BUSINESS", label: "Business" },
+  ];
+
+  const selectClassNames: ClassNamesConfig<SelectOption, false> = {
+    control: (state) =>
       `min-h-11! h-11! rounded-md! border! border-gray-300! shadow-none! outline-none! ${
         state.isFocused ? "ring-2! ring-blue-400!" : "ring-0!"
       }`,
 
-    valueContainer: () =>
-      "h-11! px-3! py-0! flex! items-center!",
-    placeholder: () =>
-      "m-0! text-gray-500!",
-    singleValue: () =>
-      "m-0!",
+    valueContainer: () => "h-11! px-3! py-0! flex! items-center!",
+
+    placeholder: () => "m-0! text-gray-500!",
+
+    singleValue: () => "m-0!",
+
     input: () =>
       "m-0! p-0! absolute! left-3! right-3! [&_input:focus]:shadow-none! [&_input:focus]:outline-none! [&_input:focus]:[--tw-ring-shadow:0_0_#0000]!",
-    indicatorsContainer: () =>
-      "h-11!",
-    option: (state: { isDisabled: boolean; isFocused: boolean }) =>
+
+    indicatorsContainer: () => "h-11!",
+
+    option: (state) =>
       state.isDisabled
         ? "text-gray-300! bg-white! cursor-not-allowed!"
         : state.isFocused
@@ -84,10 +87,12 @@ function ReservationFormFields({
           name="nationalId"
           control={control}
           render={({ field }) => (
-            <Select<PassengerOption, false>
+            <Select<SelectOption, false>
               options={passengerOptions}
               value={
-                passengerOptions.find((option) => option.value === field.value) || null
+                passengerOptions.find(
+                  (option) => option.value === field.value
+                ) || null
               }
               onChange={(option) => field.onChange(option?.value || "")}
               placeholder="Select passenger"
@@ -112,10 +117,12 @@ function ReservationFormFields({
           name="scheduleId"
           control={control}
           render={({ field }) => (
-            <Select<ScheduleOption, false>
+            <Select<SelectOption, false>
               options={scheduleOptions}
               value={
-                scheduleOptions.find((option) => option.value === field.value) || null
+                scheduleOptions.find(
+                  (option) => option.value === field.value
+                ) || null
               }
               onChange={(option) => field.onChange(option?.value || "")}
               placeholder="Select train schedule"
@@ -130,6 +137,36 @@ function ReservationFormFields({
         {errors.scheduleId?.message && (
           <p className="text-red-500 text-sm mt-1">
             {errors.scheduleId.message}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label className="block mb-2">Seat Class</label>
+
+        <Controller
+          name="seatClass"
+          control={control}
+          render={({ field }) => (
+            <Select<SelectOption, false>
+              options={seatClassOptions}
+              value={
+                seatClassOptions.find(
+                  (option) => option.value === field.value
+                ) || null
+              }
+              onChange={(option) => field.onChange(option?.value || "")}
+              placeholder="Select seat class"
+              isSearchable={false}
+              classNames={selectClassNames}
+              components={{ DropdownIndicator }}
+            />
+          )}
+        />
+
+        {errors.seatClass?.message && (
+          <p className="text-red-500 text-sm mt-1">
+            {errors.seatClass.message}
           </p>
         )}
       </div>

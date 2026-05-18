@@ -24,6 +24,7 @@ function EditPassengerModal({ passenger, onClose, onUpdated }: Props) {
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
@@ -79,9 +80,7 @@ function EditPassengerModal({ passenger, onClose, onUpdated }: Props) {
             <i className="fa-solid fa-user-pen"></i>
           </div>
 
-          <h2 className="text-xl font-bold text-gray-900">
-            Edit Passenger
-          </h2>
+          <h2 className="text-xl font-bold text-gray-900">Edit Passenger</h2>
         </div>
 
         <p className="text-sm text-gray-500 mb-6">
@@ -95,7 +94,11 @@ function EditPassengerModal({ passenger, onClose, onUpdated }: Props) {
           noValidate
           autoComplete="off"
         >
-          <PassengerFormFields register={register} errors={errors} />
+          <PassengerFormFields
+            register={register}
+            control={control}
+            errors={errors}
+          />
 
           {submitError && (
             <p className="mt-2 text-sm font-medium text-red-600">

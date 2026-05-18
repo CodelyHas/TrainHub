@@ -4,6 +4,8 @@ interface PassengerDTO {
   phone: string;
   email?: string;
   status?: string;
+  ageGroup?: "ADULT" | "CHILD";
+  isStudent?: boolean;
 }
 
 export default PassengerDTO;

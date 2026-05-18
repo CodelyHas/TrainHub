@@ -20,6 +20,10 @@ export const validateReservation = [
     .isInt({ min: 1 })
     .withMessage("Train schedule is required"),
 
+  body("seatClass")
+    .isIn(["ECONOMY", "BUSINESS"])
+    .withMessage("Seat class must be Economy or Business"),
+
   body("seatCount")
     .isInt({ min: 1 })
     .withMessage("Seat count must be at least 1")

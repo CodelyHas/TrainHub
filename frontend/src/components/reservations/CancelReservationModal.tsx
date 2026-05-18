@@ -21,7 +21,7 @@ function CancelReservationModal({
       if (e.key === "Escape") {
         onClose();
       }
-    }
+    };
 
     window.addEventListener("keydown", handleEscape);
 
@@ -74,18 +74,36 @@ function CancelReservationModal({
             <span className="font-semibold">Train:</span>{" "}
             {reservation.trainName}
           </p>
+
           <p>
             <span className="font-semibold">Route:</span>{" "}
             {reservation.departure} → {reservation.arrival}
           </p>
+
           <p>
             <span className="font-semibold">Departure:</span>{" "}
             {new Date(reservation.departureTime).toLocaleString()}
           </p>
+
+          <p>
+            <span className="font-semibold">Seat Class:</span>{" "}
+            {reservation.seatClass}
+          </p>
+
           <p>
             <span className="font-semibold">Reserved Seats:</span>{" "}
             {reservation.seatCount}
           </p>
+
+          <p>
+            <span className="font-semibold">Discount:</span>{" "}
+            {reservation.discountType === "NONE"
+              ? "No discount"
+              : `${reservation.discountType} (${
+                  reservation.discountRate * 100
+                }%)`}
+          </p>
+
           <p>
             <span className="font-semibold">Total Price:</span>{" "}
             {reservation.totalPrice} SAR
@@ -93,8 +111,8 @@ function CancelReservationModal({
         </div>
 
         <p className="text-sm text-gray-500 mt-3">
-          The reservation status will become cancelled and the seat will become
-          available again.
+          The reservation status will become cancelled and the reserved seats
+          will become available again.
         </p>
 
         <div className="flex justify-end gap-3 mt-6">

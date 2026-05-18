@@ -21,9 +21,8 @@ function ScheduleForm() {
 
   const onSubmit = async (data: ScheduleFormData) => {
     try {
-      const createdSchedule = await createScheduleRequest(data);
+      await createScheduleRequest(data);
 
-      console.log("Saved to DB:", createdSchedule);
       toast.success("Schedule created successfully");
       reset();
     } catch (error) {

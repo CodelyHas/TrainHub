@@ -46,16 +46,30 @@ export const updateScheduleData = async (req: Request, res: Response) => {
       });
     }
 
-    const newCapacity = Number(req.body.capacity);
+    const newEconomyCapacity = Number(req.body.economyCapacity);
+    const newBusinessCapacity = Number(req.body.businessCapacity);
 
-    const bookedSeats = Math.max(
-      existingSchedule.capacity - existingSchedule.availableSeats,
+    const bookedEconomySeats = Math.max(
+      existingSchedule.economyCapacity -
+        existingSchedule.economyAvailableSeats,
       0
     );
 
-    if (newCapacity < bookedSeats) {
+    const bookedBusinessSeats = Math.max(
+      existingSchedule.businessCapacity -
+        existingSchedule.businessAvailableSeats,
+      0
+    );
+
+    if (newEconomyCapacity < bookedEconomySeats) {
       return res.status(400).json({
-        error: `Capacity cannot be less than already booked seats (${bookedSeats}).`,
+        error: `Economy capacity cannot be less than already booked economy seats (${bookedEconomySeats}).`,
+      });
+    }
+
+    if (newBusinessCapacity < bookedBusinessSeats) {
+      return res.status(400).json({
+        error: `Business capacity cannot be less than already booked business seats (${bookedBusinessSeats}).`,
       });
     }
 
@@ -63,7 +77,9 @@ export const updateScheduleData = async (req: Request, res: Response) => {
       where: { id },
       data: {
         ...updateScheduleDTO(req.body),
-        availableSeats: newCapacity - bookedSeats,
+
+        economyAvailableSeats: newEconomyCapacity - bookedEconomySeats,
+        businessAvailableSeats: newBusinessCapacity - bookedBusinessSeats,
       },
     });
 

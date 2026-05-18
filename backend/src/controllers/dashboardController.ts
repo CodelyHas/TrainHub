@@ -38,28 +38,40 @@ export const getDashboardSummary = async (_req: Request, res: Response) => {
           trainName: true,
           departure: true,
           arrival: true,
-          capacity: true,
-          availableSeats: true,
+          economyCapacity: true,
+          businessCapacity: true,
+          economyAvailableSeats: true,
+          businessAvailableSeats: true,
         },
       }),
     ]);
 
     const occupancyByTrain = schedules.map((schedule) => {
-      const occupiedSeats = schedule.capacity - schedule.availableSeats;
+      const capacity = schedule.economyCapacity + schedule.businessCapacity;
+
+      const availableSeats =
+        schedule.economyAvailableSeats + schedule.businessAvailableSeats;
+
+      const occupiedSeats = capacity - availableSeats;
 
       const occupancyRate =
-        schedule.capacity > 0
-          ? Number(((occupiedSeats / schedule.capacity) * 100).toFixed(2))
+        capacity > 0
+          ? Number(((occupiedSeats / capacity) * 100).toFixed(2))
           : 0;
 
       return {
         id: schedule.id,
         trainName: schedule.trainName,
         route: `${schedule.departure} → ${schedule.arrival}`,
-        capacity: schedule.capacity,
-        availableSeats: schedule.availableSeats,
+        capacity,
+        availableSeats,
         occupiedSeats,
         occupancyRate,
+
+        economyCapacity: schedule.economyCapacity,
+        businessCapacity: schedule.businessCapacity,
+        economyAvailableSeats: schedule.economyAvailableSeats,
+        businessAvailableSeats: schedule.businessAvailableSeats,
       };
     });
 

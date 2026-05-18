@@ -6,5 +6,7 @@ export const createPassengerDTO = (data: PassengerDTO) => {
     nationalId: data.nationalId,
     phone: data.phone,
     email: data.email || null,
+    ageGroup: data.ageGroup || "ADULT",
+    isStudent: Boolean(data.isStudent),
   };
 };
