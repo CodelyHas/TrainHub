@@ -37,7 +37,7 @@ function UtilizationReportTable({ rows }: Props) {
             {rows.length === 0 ? (
               <tr className="tableCells text-center">
                 <td colSpan={12} className="py-6 text-sm text-gray-500">
-                  No utilization report generated yet.
+                  No utilization data found for the selected period.
                 </td>
               </tr>
             ) : (

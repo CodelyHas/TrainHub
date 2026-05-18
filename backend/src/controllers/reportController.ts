@@ -81,29 +81,31 @@ export const generateReport = async (req: Request, res: Response) => {
       },
     });
 
-    const utilizationReport = schedules.map((schedule) => {
-      const economyOccupiedSeats = confirmedReservations
-        .filter(
-          (reservation) =>
-            reservation.scheduleId === schedule.id &&
-            reservation.seatClass === "ECONOMY"
-        )
-        .reduce((total, reservation) => total + reservation.seatCount, 0);
+    const utilizationReport = schedules
+      .map((schedule) => {
+        const economyOccupiedSeats = confirmedReservations
+          .filter(
+            (reservation) =>
+              reservation.scheduleId === schedule.id &&
+              reservation.seatClass === "ECONOMY"
+          )
+          .reduce((total, reservation) => total + reservation.seatCount, 0);
 
-      const businessOccupiedSeats = confirmedReservations
-        .filter(
-          (reservation) =>
-            reservation.scheduleId === schedule.id &&
-            reservation.seatClass === "BUSINESS"
-        )
-        .reduce((total, reservation) => total + reservation.seatCount, 0);
+        const businessOccupiedSeats = confirmedReservations
+          .filter(
+            (reservation) =>
+              reservation.scheduleId === schedule.id &&
+              reservation.seatClass === "BUSINESS"
+          )
+          .reduce((total, reservation) => total + reservation.seatCount, 0);
 
-      return formatUtilizationReportRow(
-        schedule,
-        economyOccupiedSeats,
-        businessOccupiedSeats
-      );
-    });
+        return formatUtilizationReportRow(
+          schedule,
+          economyOccupiedSeats,
+          businessOccupiedSeats
+        );
+      })
+      .filter((row) => row.totalOccupiedSeats > 0);
 
     return res.status(200).json({
       message: "Report generated successfully",
