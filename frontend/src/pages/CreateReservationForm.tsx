@@ -71,7 +71,10 @@ function CreateReservationForm() {
   const originalPrice =
     selectedPrice && seatCount > 0 ? selectedPrice * seatCount : 0;
 
-  const discountAmount = originalPrice * discountRate;
+  const discountAmount = seatCount > 0 && selectedPrice
+    ? selectedPrice * discountRate
+    : 0;
+
   const totalPrice = originalPrice - discountAmount;
 
   useEffect(() => {
