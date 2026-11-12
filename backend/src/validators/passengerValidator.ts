@@ -11,6 +11,8 @@ export const validatePassenger = [
     .trim()
     .notEmpty()
     .withMessage("Passenger full name is required")
+    .isLength({ min: 2, max: 15 })
+    .withMessage("Passenger full name must be between 2 and 15 characters")
     .matches(/^[\p{L}\s]+$/u)
     .withMessage("Passenger full name must contain letters and spaces only"),
 
@@ -27,8 +29,8 @@ export const validatePassenger = [
     .trim()
     .notEmpty()
     .withMessage("Phone number is required")
-    .isLength({ min: 7, max: 15 })
-    .withMessage("Phone number must be between 7 and 15 digits")
+    .isLength({ min: 7, max: 10 })
+    .withMessage("Phone number must be between 7 and 10 digits")
     .isNumeric()
     .withMessage("Phone number must contain numbers only"),
 

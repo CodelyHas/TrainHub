@@ -9,7 +9,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  
 }
 
 enum SeatClass {
@@ -34,60 +33,61 @@ enum UserRole {
 }
 
 model TrainSchedule {
-  id                     Int      @id @default(autoincrement())
-  trainName              String
-  departure              String
-  arrival                String
-  departureTime          DateTime
-  arrivalTime            DateTime
+  id            Int      @id @default(autoincrement())
+  trainName     String
+  departure     String
+  arrival       String
+  departureTime DateTime
+  arrivalTime   DateTime
 
-  economyPrice           Float
-  businessPrice          Float
+  economyPrice  Float
+  businessPrice Float
 
-  economyCapacity        Int
-  businessCapacity       Int
+  economyCapacity  Int
+  businessCapacity Int
 
   economyAvailableSeats  Int
   businessAvailableSeats Int
 
-  createdAt              DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  reservations           Reservation[]
+  reservations Reservation[]
 }
 
 model Passenger {
-  id            Int           @id @default(autoincrement())
-  fullName      String
-  nationalId    String        @unique
-  phone         String
-  email         String?
-  status        String        @default("ACTIVE")
-  ageGroup  AgeGroup @default(ADULT)
-  isStudent Boolean  @default(false)
-  createdAt     DateTime      @default(now())
+  id             Int      @id @default(autoincrement())
+  fullName       String
+  nationalId     String
+  nationalIdHash String?  @unique
+  phone          String
+  email          String?
+  status         String   @default("ACTIVE")
+  ageGroup       AgeGroup @default(ADULT)
+  isStudent      Boolean  @default(false)
+  createdAt      DateTime @default(now())
 
   reservations Reservation[]
 }
 
 model Reservation {
-  id          Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   passengerId Int
   scheduleId  Int
 
-  passenger   Passenger     @relation(fields: [passengerId], references: [id])
-  schedule    TrainSchedule @relation(fields: [scheduleId], references: [id])
+  passenger Passenger     @relation(fields: [passengerId], references: [id])
+  schedule  TrainSchedule @relation(fields: [scheduleId], references: [id])
 
-  seatClass    SeatClass
-  seatCount    Int
+  seatClass SeatClass
+  seatCount Int
 
   originalPrice Float
   discountType  DiscountType @default(NONE)
   discountRate  Float
   totalPrice    Float
 
-  status      String   @default("CONFIRMED")
-  createdAt   DateTime @default(now())
+  status    String   @default("CONFIRMED")
+  createdAt DateTime @default(now())
 }
 
 model User {

@@ -14,7 +14,16 @@ const app = express();
 
 console.log("Server file started"); 
 app.use(express.json());
-app.use(cors());
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL,
+].filter(Boolean) as string[];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+  })
+);
 
 app.get("/", (_req, res) => {
     res.send("API running...")
