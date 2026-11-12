@@ -22,7 +22,7 @@ function Dashboard() {
         <button
           type="button"
           onClick={() => setMobileSidebarOpen(true)}
-          className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2 text-sm font-semibold text-white shadow"
+          className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2 text-sm font-semibold text-white shadow cursor-pointer"
         >
           <i className="fa-solid fa-bars"></i>
           Menu
@@ -52,7 +52,7 @@ function Dashboard() {
             <button
               type="button"
               onClick={() => setMobileSidebarOpen(false)}
-              className="text-gray-300 hover:text-white"
+              className="text-gray-300 hover:text-white cursor-pointer"
             >
               <i className="fa-solid fa-xmark text-xl"></i>
             </button>

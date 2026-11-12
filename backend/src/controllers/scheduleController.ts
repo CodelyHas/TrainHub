@@ -113,3 +113,65 @@ export const deleteScheduleData = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to delete schedule" });
   }
 };
+
+export const reconcileScheduleData = async (_req: Request, res: Response) => {
+  try {
+    const schedules = await prisma.trainSchedule.findMany();
+    let reconciledCount = 0;
+
+    for (const schedule of schedules) {
+      const confirmedBookings = await prisma.reservation.findMany({
+        where: {
+          scheduleId: schedule.id,
+          status: "CONFIRMED",
+        },
+      });
+
+      let bookedEconomySeats = 0;
+      let bookedBusinessSeats = 0;
+
+      for (const booking of confirmedBookings) {
+        if (booking.seatClass === "BUSINESS") {
+          bookedBusinessSeats += booking.seatCount || 1;
+        } else {
+          bookedEconomySeats += booking.seatCount || 1;
+        }
+      }
+
+      const economyAvailableSeats = Math.max(
+        schedule.economyCapacity - bookedEconomySeats,
+        0
+      );
+      const businessAvailableSeats = Math.max(
+        schedule.businessCapacity - bookedBusinessSeats,
+        0
+      );
+
+      if (
+        economyAvailableSeats !== schedule.economyAvailableSeats ||
+        businessAvailableSeats !== schedule.businessAvailableSeats
+      ) {
+        await prisma.trainSchedule.update({
+          where: { id: schedule.id },
+          data: {
+            economyAvailableSeats,
+            businessAvailableSeats,
+          },
+        });
+
+        reconciledCount++;
+      }
+    }
+
+    res.json({
+      message:
+        reconciledCount > 0
+          ? `Reconciled ${reconciledCount} schedule(s) successfully`
+          : "All schedules are already up to date",
+      reconciledCount,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to reconcile schedules" });
+  }
+};

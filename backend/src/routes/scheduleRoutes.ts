@@ -4,6 +4,7 @@ import {
   getScheduleData,
   updateScheduleData,
   deleteScheduleData,
+  reconcileScheduleData,
 } from "../controllers/scheduleController.ts";
 import { validateSchedule, validateScheduleId } from "../validators/scheduleValidator.ts";
 import { validationMiddleware } from "../middleware/validationMiddleware.ts";
@@ -21,6 +22,13 @@ router.post(
   validateSchedule("create"),
   validationMiddleware,
   sendScheduleData
+);
+
+router.post(
+  "/reconcile",
+  authenticateToken,
+  authorizeRoles("ADMIN"),
+  reconcileScheduleData
 );
 
 router.get("/", authenticateToken, getScheduleData);

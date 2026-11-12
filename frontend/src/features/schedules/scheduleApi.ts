@@ -95,3 +95,23 @@ export const deleteScheduleRequest = async (id: number): Promise<void> => {
     );
   }
 }
+
+export const reconcileSchedulesRequest = async (): Promise<{
+  message: string;
+  reconciledCount: number;
+}> => {
+  const response = await fetch(`${SCHEDULE_API_URL}/reconcile`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      result.message || result.error || "Failed to reconcile schedules"
+    );
+  }
+
+  return result;
+};
